@@ -17,15 +17,7 @@ export const createUser = async (req: Request, res: Response, next: any) => {
     const newUser = await User.create({ email, password })
 
     const token = createToken(newUser._id)
-    res.cookie("token", token, {
-      httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60,
-      path: "/",
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-    })
-
-    res.send({ success: 1, loggedIn: 1, user: newUser })
+    res.send({ success: 1, loggedIn: 1, user: newUser, token: token })
   } catch (err) {
     next(err)
   }
@@ -46,15 +38,7 @@ export const loginUser = async (req: Request, res: Response, next: any) => {
     }
 
     const token = createToken(matchingUser._id)
-    res.cookie("token", token, {
-      httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60,
-      path: "/",
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-    })
-
-    res.send({ success: 1, loggedIn: 1, user: matchingUser })
+    res.send({ success: 1, loggedIn: 1, user: matchingUser, token: token })
   } catch (err) {
     next(err)
   }
@@ -83,16 +67,6 @@ export const checkStatus = async (req: Request, res: Response, next: any) => {
       throw new HTTPError("Wrong credentials", 401)
     }
 
-    const newToken = createToken(user._id)
-
-    res.cookie("token", newToken, {
-      httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60,
-      path: "/",
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-    })
-
     res.send({ success: 1, loggedIn: 1, user: user })
   } catch (err) {
     next(err)
@@ -102,7 +76,6 @@ export const checkStatus = async (req: Request, res: Response, next: any) => {
 // DELETE api/auth/logout
 export const logoutUser = async (req: Request, res: Response, next: any) => {
   try {
-    res.clearCookie("token")
     res.send({ success: 1, loggedOut: 1 })
   } catch (err) {
     next(err)

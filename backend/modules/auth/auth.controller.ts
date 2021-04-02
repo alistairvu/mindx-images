@@ -90,7 +90,7 @@ export const checkStatus = async (req: Request, res: Response, next: any) => {
     }
 
     const newToken = createToken(user._id)
-    redisClient.sadd("mindx-images-blacklist", token)
+    // redisClient.sadd("mindx-images-blacklist", token)
 
     res.cookie("token", newToken, {
       httpOnly: true,

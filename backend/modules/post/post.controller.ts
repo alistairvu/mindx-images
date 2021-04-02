@@ -9,12 +9,11 @@ export const getPosts = async (req: Request, res: Response, next: any) => {
     const pageSize = 5
     const page = Number(req.query.page) || 1
     const offset = pageSize * (page - 1)
-    const posts = await Post.find({})
-      .populate("createdBy")
-      .limit(pageSize)
-      .skip(offset)
 
-    const postCount = await Post.countDocuments()
+    const [posts, postCount] = await Promise.all([
+      Post.find({}).populate("createdBy").limit(pageSize).skip(offset),
+      Post.countDocuments(),
+    ])
     const pageCount = Math.ceil(postCount / pageSize)
 
     res.send({ success: 1, page: page, pageCount: pageCount, posts: posts })

@@ -63,15 +63,17 @@ export const loginUser = async (req: Request, res: Response, next: any) => {
 // GET api/auth/status
 export const checkStatus = async (req: Request, res: Response, next: any) => {
   try {
-    const { token } = req.cookies
+    const token = req.headers.authorization
+    const rawToken = token.split(" ")[1]
+    console.log(rawToken)
 
-    if (!token || token === "deleted") {
+    if (!token || rawToken === "undefined" || !token.startsWith("Bearer ")) {
       return res
         .status(200)
         .send({ success: 1, loggedIn: 0, message: "User not logged in" })
     }
 
-    const { _id } = jwt.verify(token, process.env.JWT_SECRET) as {
+    const { _id } = jwt.verify(rawToken, process.env.JWT_SECRET) as {
       _id: string
     }
 
@@ -100,7 +102,6 @@ export const checkStatus = async (req: Request, res: Response, next: any) => {
 // DELETE api/auth/logout
 export const logoutUser = async (req: Request, res: Response, next: any) => {
   try {
-    const { token } = req.cookies
     res.clearCookie("token")
     res.send({ success: 1, loggedOut: 1 })
   } catch (err) {

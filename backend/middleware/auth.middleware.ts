@@ -15,13 +15,17 @@ export const protect = async (
   next: any
 ) => {
   try {
-    const { token } = req.cookies
+    const token = req.headers.authorization
+    const rawToken = token.split(" ")[1]
 
-    if (!token || token === "deleted") {
-      throw new HTTPError("User not authorised", 401)
+    if (!token || rawToken === "undefined" || !token.startsWith("Bearer ")) {
+      console.log("no authorization")
+      return res
+        .status(200)
+        .send({ success: 1, loggedIn: 0, message: "User not logged in" })
     }
 
-    const { _id } = jwt.verify(token, process.env.JWT_SECRET) as {
+    const { _id } = jwt.verify(rawToken, process.env.JWT_SECRET) as {
       _id: string
     }
 

@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 import bcrypt from "bcryptjs"
 
-interface UserSchemaInterface extends mongoose.Document {
+export interface UserSchemaInterface extends mongoose.Document {
   email: string
   password: string
   checkPassword: (password: string) => boolean

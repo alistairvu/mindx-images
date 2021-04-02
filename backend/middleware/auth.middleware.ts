@@ -40,6 +40,7 @@ export const protect = async (
       throw new HTTPError("User not authorised", 401)
     }
 
+    req.user = user
     next()
   } catch (err) {
     next(err)

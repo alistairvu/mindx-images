@@ -5,7 +5,7 @@ const createToken = (_id: string) => {
     { _id: _id, time: new Date() },
     process.env.JWT_SECRET as string,
     {
-      expiresIn: "7d",
+      expiresIn: "1h",
     }
   )
   return token

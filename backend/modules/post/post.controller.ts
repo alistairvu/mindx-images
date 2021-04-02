@@ -10,10 +10,39 @@ export const getPosts = async (req: Request, res: Response, next: any) => {
     const pageNumber = Number(req.query.page) || 1
     const offset = pageSize * (pageNumber - 1)
 
-    const [posts, postCount] = await Promise.all([
-      Post.find({}).populate("createdBy").limit(pageSize).skip(offset),
-      Post.countDocuments(),
+    const postAggregate = await Post.aggregate([
+      {
+        $facet: {
+          posts: [
+            { $skip: offset },
+            { $limit: pageSize },
+            {
+              $lookup: {
+                from: "users",
+                localField: "createdBy",
+                foreignField: "_id",
+                as: "createdBy",
+              },
+            },
+            {
+              $project: {
+                createdBy: {
+                  password: 0,
+                },
+              },
+            },
+          ],
+          count: [
+            {
+              $count: "postCount",
+            },
+          ],
+        },
+      },
     ])
+
+    const { posts, count } = postAggregate[0]
+    const { postCount } = count[0]
     const pageCount = Math.ceil(postCount / pageSize)
 
     res.send({

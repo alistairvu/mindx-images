@@ -43,6 +43,6 @@ export const protect = async (
     req.user = user
     next()
   } catch (err) {
-    next(err)
+    next(new HTTPError(err.message, 401))
   }
 }

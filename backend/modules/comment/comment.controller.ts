@@ -30,7 +30,7 @@ export const createComment = async (
   next: any
 ) => {
   try {
-    const { postId, content } = req.body
+    const { postId, content } = req.body.comment
     const post = await Post.findById(postId)
 
     if (!post) {

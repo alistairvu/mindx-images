@@ -1,7 +1,5 @@
 import { Request, Response } from "express"
 import createToken from "../../utils/jwt"
-import redisClient from "../../redis"
-import { promisify } from "es6-promisify"
 import jwt from "jsonwebtoken"
 import User from "./user"
 import HTTPError from "../../httpError"
@@ -67,12 +65,6 @@ export const checkStatus = async (req: Request, res: Response, next: any) => {
   try {
     const { token } = req.cookies
 
-    // const isMemberPromise = promisify(
-    //   redisClient.sismember.bind(redisClient)
-    // ) as (key: string, member: string) => Promise<boolean>
-
-    // const isInBlacklist = await isMemberPromise("mindx-images-blacklist", token)
-
     if (!token || token === "deleted") {
       return res
         .status(200)
@@ -90,7 +82,6 @@ export const checkStatus = async (req: Request, res: Response, next: any) => {
     }
 
     const newToken = createToken(user._id)
-    // redisClient.sadd("mindx-images-blacklist", token)
 
     res.cookie("token", newToken, {
       httpOnly: true,
@@ -111,7 +102,6 @@ export const logoutUser = async (req: Request, res: Response, next: any) => {
   try {
     const { token } = req.cookies
     res.clearCookie("token")
-    // redisClient.sadd("mindx-images-blacklist", token)
     res.send({ success: 1, loggedOut: 1 })
   } catch (err) {
     next(err)

@@ -1,4 +1,3 @@
-import redisClient from "../redis"
 import { promisify } from "es6-promisify"
 import jwt from "jsonwebtoken"
 import { Request, Response } from "express"
@@ -18,13 +17,7 @@ export const protect = async (
   try {
     const { token } = req.cookies
 
-    const isMemberPromise = promisify(
-      redisClient.sismember.bind(redisClient)
-    ) as (key: string, member: string) => Promise<boolean>
-
-    const isInBlacklist = await isMemberPromise("mindx-images-blacklist", token)
-
-    if (!token || token === "deleted" || isInBlacklist) {
+    if (!token || token === "deleted") {
       throw new HTTPError("User not authorised", 401)
     }
 

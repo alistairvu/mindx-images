@@ -6,9 +6,9 @@ import HTTPError from "../../httpError"
 // GET /api/posts
 export const getPosts = async (req: Request, res: Response, next: any) => {
   try {
-    const pageSize = 5
-    const page = Number(req.query.page) || 1
-    const offset = pageSize * (page - 1)
+    const pageSize = Number(req.query.pageSize) || 4
+    const pageNumber = Number(req.query.page) || 1
+    const offset = pageSize * (pageNumber - 1)
 
     const [posts, postCount] = await Promise.all([
       Post.find({}).populate("createdBy").limit(pageSize).skip(offset),
@@ -16,7 +16,12 @@ export const getPosts = async (req: Request, res: Response, next: any) => {
     ])
     const pageCount = Math.ceil(postCount / pageSize)
 
-    res.send({ success: 1, page: page, pageCount: pageCount, posts: posts })
+    res.send({
+      success: 1,
+      pageNumber: pageNumber,
+      pageCount: pageCount,
+      posts: posts,
+    })
   } catch (err) {
     next(err)
   }

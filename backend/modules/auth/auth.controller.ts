@@ -67,13 +67,13 @@ export const checkStatus = async (req: Request, res: Response, next: any) => {
   try {
     const { token } = req.cookies
 
-    const isMemberPromise = promisify(
-      redisClient.sismember.bind(redisClient)
-    ) as (key: string, member: string) => Promise<boolean>
+    // const isMemberPromise = promisify(
+    //   redisClient.sismember.bind(redisClient)
+    // ) as (key: string, member: string) => Promise<boolean>
 
-    const isInBlacklist = await isMemberPromise("mindx-images-blacklist", token)
+    // const isInBlacklist = await isMemberPromise("mindx-images-blacklist", token)
 
-    if (!token || token === "deleted" || isInBlacklist) {
+    if (!token || token === "deleted") {
       return res
         .status(200)
         .send({ success: 1, loggedIn: 0, message: "User not logged in" })
@@ -111,7 +111,7 @@ export const logoutUser = async (req: Request, res: Response, next: any) => {
   try {
     const { token } = req.cookies
     res.clearCookie("token")
-    redisClient.sadd("mindx-images-blacklist", token)
+    // redisClient.sadd("mindx-images-blacklist", token)
     res.send({ success: 1, loggedOut: 1 })
   } catch (err) {
     next(err)

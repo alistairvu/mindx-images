@@ -4,12 +4,10 @@ import jwt from "jsonwebtoken"
 import { Request, Response } from "express"
 import User from "../modules/auth/user"
 import HTTPError from "../httpError"
+import { UserSchemaInterface } from "../modules/auth/user"
 
 export interface RequestWithUser extends Request {
-  user: {
-    _id: string
-    email: string
-  }
+  user: UserSchemaInterface
 }
 
 export const protect = async (

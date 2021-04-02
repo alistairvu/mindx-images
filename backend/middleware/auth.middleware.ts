@@ -18,7 +18,12 @@ export const protect = async (
     const token = req.headers.authorization
     const rawToken = token.split(" ")[1]
 
-    if (!token || rawToken === "undefined" || !token.startsWith("Bearer ")) {
+    if (
+      !token ||
+      !token.startsWith("Bearer ") ||
+      !rawToken ||
+      rawToken === "undefined"
+    ) {
       console.log("no authorization")
       return res
         .status(200)

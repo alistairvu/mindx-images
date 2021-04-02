@@ -51,7 +51,12 @@ export const checkStatus = async (req: Request, res: Response, next: any) => {
     const rawToken = token.split(" ")[1]
     console.log(rawToken)
 
-    if (!token || rawToken === "undefined" || !token.startsWith("Bearer ")) {
+    if (
+      !token ||
+      !token.startsWith("Bearer ") ||
+      !rawToken ||
+      rawToken === "undefined"
+    ) {
       return res
         .status(200)
         .send({ success: 1, loggedIn: 0, message: "User not logged in" })

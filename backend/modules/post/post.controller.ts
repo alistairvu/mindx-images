@@ -49,7 +49,7 @@ export const createPost = async (
   next: any
 ) => {
   try {
-    const { imageUrl, title, description } = req.body
+    const { imageUrl, title, description } = req.body.post
     const createdBy = req.user._id
     const post = await Post.create({ imageUrl, title, description, createdBy })
     res.send({ success: 1, post: post })

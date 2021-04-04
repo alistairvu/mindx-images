@@ -1,6 +1,7 @@
 import { Response, Request } from "express"
 import { RequestWithUser } from "../../middleware/auth.middleware"
 import Post from "./post"
+import Comment from "../comment/comment"
 import HTTPError from "../../httpError"
 
 // GET /api/posts
@@ -59,13 +60,21 @@ export const getPosts = async (req: Request, res: Response, next: any) => {
 // GET /api/posts/:id
 export const showPost = async (req: Request, res: Response, next: any) => {
   try {
-    const post = await Post.findById(req.params.id).populate("createdBy")
+    const post = await Post.findById(req.params.id).populate(
+      "createdBy",
+      "email"
+    )
 
     if (!post) {
       throw new HTTPError("No matching posts found", 404)
     }
 
-    res.send({ success: 1, post: post })
+    const comments = await Comment.find({ post: post._id }).populate(
+      "createdBy",
+      "email"
+    )
+
+    res.send({ success: 1, post: post, comments: comments })
   } catch (err) {
     next(err)
   }

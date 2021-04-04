@@ -8,7 +8,7 @@ import HTTPError from "../../httpError"
 export const getComments = async (req: Request, res: Response, next: any) => {
   try {
     const postId = req.params.id
-    const post = await Post.findById(postId).populate("createdBy")
+    const post = await Post.findById(postId)
 
     if (!post) {
       throw new HTTPError("No matching posts found", 404)

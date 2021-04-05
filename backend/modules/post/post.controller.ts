@@ -29,7 +29,11 @@ export const getPosts = async (req: Request, res: Response, next: any) => {
               $project: {
                 createdBy: {
                   password: 0,
+                  __v: 0,
                 },
+                __v: 0,
+                createdAt: 0,
+                updatedAt: 0,
               },
             },
           ],
@@ -60,21 +64,20 @@ export const getPosts = async (req: Request, res: Response, next: any) => {
 // GET /api/posts/:id
 export const showPost = async (req: Request, res: Response, next: any) => {
   try {
-    const post = await Post.findById(req.params.id).populate(
-      "createdBy",
-      "email"
-    )
+    const post = await Post.findById(req.params.id)
+      .select("-__v")
+      .populate("createdBy", "email")
+      .populate({
+        path: "comments",
+        populate: { path: "createdBy", select: "email" },
+        select: "-__v",
+      })
 
     if (!post) {
       throw new HTTPError("No matching posts found", 404)
     }
 
-    const comments = await Comment.find({ post: post._id }).populate(
-      "createdBy",
-      "email"
-    )
-
-    res.send({ success: 1, post: post, comments: comments })
+    res.send({ success: 1, post: post })
   } catch (err) {
     next(err)
   }

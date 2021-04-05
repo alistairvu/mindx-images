@@ -5,6 +5,7 @@ interface PostSchemaInterface extends mongoose.Document {
   title: string
   description?: string
   createdBy: mongoose.Schema.Types.ObjectId
+  comments: any[]
 }
 
 const PostSchema = new mongoose.Schema<PostSchemaInterface>(
@@ -26,7 +27,13 @@ const PostSchema = new mongoose.Schema<PostSchemaInterface>(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 )
+
+PostSchema.virtual("comments", {
+  ref: "comment",
+  localField: "_id",
+  foreignField: "post",
+})
 
 export default mongoose.model<PostSchemaInterface>("post", PostSchema)

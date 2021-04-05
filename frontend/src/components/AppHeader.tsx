@@ -6,7 +6,7 @@ const AppHeader: React.FC = () => {
   const [isHamburgerOpen, setIsHamburgerOpen] = useState<boolean>(false)
 
   return (
-    <header className="sm:flex sm:justify-between sm:items-center shadow py-2 px-2 md:px-4">
+    <header className="sm:flex sm:justify-between sm:items-center shadow py-2 px-2 md:px-4 sticky">
       <div className="flex justify-between items-center">
         <Link
           to="/"
@@ -58,18 +58,19 @@ const AppHeader: React.FC = () => {
           isHamburgerOpen ? "flex flex-col items-start" : "hidden"
         } sm:flex sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0`}
       >
-        <a
-          href="#"
+        <Link
+          to="/signup"
           className="block font-semibold text-blue-600 text-lg py-2 px-4 rounded hover:bg-gray-100"
+          onClick={() => setIsHamburgerOpen(false)}
         >
           Sign up
-        </a>
-        <a
-          href="#"
+        </Link>
+        <Link
+          to="/login"
           className="block font-semibold text-blue-600 text-lg py-2 px-4 rounded hover:bg-gray-100"
         >
           Login
-        </a>
+        </Link>
       </div>
 
       {/* <div

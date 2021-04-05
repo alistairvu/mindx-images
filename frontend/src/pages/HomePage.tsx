@@ -1,12 +1,11 @@
+import { HomeCard } from "../components/home"
+
 const HomePage: React.FC = () => {
   return (
     <div className="container">
-      <h1 className="text-4xl font-bold">
-        Welcome to Create React App + Tailwind
-      </h1>
-      <p className="text-2xl">
-        Get started by editing <code className="text-red-500">App.tsx</code>!
-      </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <HomeCard />
+      </div>
     </div>
   )
 }

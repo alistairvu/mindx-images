@@ -7,7 +7,7 @@ import HTTPError from "../../httpError"
 // POST /api/auth/signup
 export const createUser = async (req: Request, res: Response, next: any) => {
   try {
-    const { email, password } = req.body
+    const { email, password } = req.body.user
 
     const existingUser = await User.findOne({ email })
     if (existingUser) {
@@ -26,7 +26,7 @@ export const createUser = async (req: Request, res: Response, next: any) => {
 // POST /api/auth/login
 export const loginUser = async (req: Request, res: Response, next: any) => {
   try {
-    const { email, password } = req.body
+    const { email, password } = req.body.user
     const matchingUser = await User.findOne({ email })
     if (!matchingUser) {
       throw new HTTPError("Wrong email/password combination.", 401)

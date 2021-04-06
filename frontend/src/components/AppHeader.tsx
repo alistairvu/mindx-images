@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { Transition } from "@headlessui/react"
+import { Menu, Transition } from "@headlessui/react"
 
 const AppHeader: React.FC = () => {
   const [isHamburgerOpen, setIsHamburgerOpen] = useState<boolean>(false)
@@ -80,42 +80,42 @@ const AppHeader: React.FC = () => {
           isHamburgerOpen ? "flex flex-col flex-grow items-start" : "hidden"
         } sm:flex sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0`}
       >
-        <div className="relative">
-          <button
-            className="block text-lg py-2 px-4 rounded hover:bg-gray-100"
-            onClick={() => setIsDropdownOpen((prev) => !prev)}
-          >
-            Hello, User!
-          </button>
-          <Transition
-            show={isDropdownOpen}
-            enter="transition ease-out duration-100"
-            enterFrom="transform opacity-0 scale-95"
-            enterTo="transform opacity-100 scale-100"
-            leave="transition ease-in duration-75"
-            leaveFrom="transform opacity-100 scale-100"
-            leaveTo="transform opacity-0 scale-95"
-          >
-            <div
-              className={`${
-                isDropdownOpen ? "block" : "hidden"
-              } absolute right-0 w-full mt-2 origin-top-right rounded-md shadow-lg md:w-48 bg-white`}
-            >
-              <a
-                href="#"
-                className="block font-semibold text-lg py-2 px-4 rounded hover:bg-gray-100"
+        <Menu as="div" className="relative">
+          {({ open }) => (
+            <>
+              <Menu.Button className="block text-lg py-2 px-4 rounded hover:bg-gray-100">
+                Hello, User!
+              </Menu.Button>
+              <Transition
+                show={open}
+                enter="transition ease-out duration-100"
+                enterFrom="transform opacity-0 scale-95"
+                enterTo="transform opacity-100 scale-100"
+                leave="transition ease-in duration-75"
+                leaveFrom="transform opacity-100 scale-100"
+                leaveTo="transform opacity-0 scale-95"
               >
-                Upload
-              </a>
-              <a
-                href="#"
-                className="block font-semibold text-lg py-2 px-4 rounded hover:bg-gray-100"
-              >
-                Logout
-              </a>
-            </div>
-          </Transition>
-        </div>
+                <Menu.Items
+                  static
+                  className={`absolute right-0 w-full mt-2 origin-top-right rounded-md shadow-lg md:w-48 bg-white`}
+                >
+                  <Menu.Item
+                    as="a"
+                    className="block font-semibold text-lg py-2 px-4 rounded hover:bg-gray-100"
+                  >
+                    Upload
+                  </Menu.Item>
+                  <Menu.Item
+                    as="a"
+                    className="block font-semibold text-lg py-2 px-4 rounded hover:bg-gray-100"
+                  >
+                    Logout
+                  </Menu.Item>
+                </Menu.Items>
+              </Transition>
+            </>
+          )}
+        </Menu>
       </div>
     </header>
   )

@@ -5,7 +5,6 @@ import { Menu, Transition } from "@headlessui/react"
 
 const AppHeader: React.FC = () => {
   const [isHamburgerOpen, setIsHamburgerOpen] = useState<boolean>(false)
-  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
 
   return (
     <header className="sm:flex sm:justify-between sm:items-center shadow py-2 px-2 md:px-4 sticky">
@@ -55,7 +54,7 @@ const AppHeader: React.FC = () => {
         </button>
       </div>
 
-      {/* <div
+      <div
         className={` ${
           isHamburgerOpen ? "flex flex-col items-start" : "hidden"
         } sm:flex sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0`}
@@ -73,17 +72,17 @@ const AppHeader: React.FC = () => {
         >
           Login
         </Link>
-      </div> */}
+      </div>
 
-      <div
+      {/* <div
         className={` ${
           isHamburgerOpen ? "flex flex-col flex-grow items-start" : "hidden"
         } sm:flex sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0`}
       >
-        <Menu as="div" className="relative">
+        <Menu as="div" className="relative focus:outline-none focus:ring">
           {({ open }) => (
             <>
-              <Menu.Button className="block text-lg py-2 px-4 rounded hover:bg-gray-100">
+              <Menu.Button className="block text-lg py-2 px-4 rounded hover:bg-gray-100 focus:outline-none">
                 Hello, User!
               </Menu.Button>
               <Transition
@@ -97,17 +96,19 @@ const AppHeader: React.FC = () => {
               >
                 <Menu.Items
                   static
-                  className={`absolute right-0 w-full mt-2 origin-top-right rounded-md shadow-lg md:w-48 bg-white`}
+                  className={`absolute right-0 w-full mt-2 origin-top-right rounded-md shadow-lg md:w-48 bg-white focus:outline-none`}
                 >
+                  <Link to="/upload">
+                    <Menu.Item
+                      as="a"
+                      className="block font-semibold text-lg py-2 px-4 rounded hover:bg-gray-100 focus:outline-none"
+                    >
+                      Upload
+                    </Menu.Item>
+                  </Link>
                   <Menu.Item
                     as="a"
-                    className="block font-semibold text-lg py-2 px-4 rounded hover:bg-gray-100"
-                  >
-                    Upload
-                  </Menu.Item>
-                  <Menu.Item
-                    as="a"
-                    className="block font-semibold text-lg py-2 px-4 rounded hover:bg-gray-100"
+                    className="block font-semibold text-lg py-2 px-4 rounded hover:bg-gray-100 focus:outline-none"
                   >
                     Logout
                   </Menu.Item>
@@ -116,7 +117,7 @@ const AppHeader: React.FC = () => {
             </>
           )}
         </Menu>
-      </div>
+      </div> */}
     </header>
   )
 }

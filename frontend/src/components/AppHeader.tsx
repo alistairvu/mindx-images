@@ -1,9 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import { Transition } from "@headlessui/react"
 
 const AppHeader: React.FC = () => {
   const [isHamburgerOpen, setIsHamburgerOpen] = useState<boolean>(false)
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
 
   return (
     <header className="sm:flex sm:justify-between sm:items-center shadow py-2 px-2 md:px-4 sticky">
@@ -53,7 +55,7 @@ const AppHeader: React.FC = () => {
         </button>
       </div>
 
-      <div
+      {/* <div
         className={` ${
           isHamburgerOpen ? "flex flex-col items-start" : "hidden"
         } sm:flex sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0`}
@@ -71,27 +73,50 @@ const AppHeader: React.FC = () => {
         >
           Login
         </Link>
-      </div>
+      </div> */}
 
-      {/* <div
+      <div
         className={` ${
-          isHamburgerOpen ? "flex flex-col items-start" : "hidden"
+          isHamburgerOpen ? "flex flex-col flex-grow items-start" : "hidden"
         } sm:flex sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0`}
       >
-        <h2 className="block text-lg py-2 px-4">Hello, User!</h2>
-        <a
-          href="#"
-          className="block font-semibold text-lg py-2 px-4 rounded hover:bg-gray-100"
-        >
-          Logout
-        </a>
-        <a
-          href="#"
-          className="block font-bold text-lg py-2 px-4 rounded hover:bg-gray-100"
-        >
-          Upload
-        </a>
-      </div> */}
+        <div className="relative">
+          <button
+            className="block text-lg py-2 px-4 rounded hover:bg-gray-100"
+            onClick={() => setIsDropdownOpen((prev) => !prev)}
+          >
+            Hello, User!
+          </button>
+          <Transition
+            show={isDropdownOpen}
+            enter="transition ease-out duration-100"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
+          >
+            <div
+              className={`${
+                isDropdownOpen ? "block" : "hidden"
+              } absolute right-0 w-full mt-2 origin-top-right rounded-md shadow-lg md:w-48 bg-white`}
+            >
+              <a
+                href="#"
+                className="block font-semibold text-lg py-2 px-4 rounded hover:bg-gray-100"
+              >
+                Upload
+              </a>
+              <a
+                href="#"
+                className="block font-semibold text-lg py-2 px-4 rounded hover:bg-gray-100"
+              >
+                Logout
+              </a>
+            </div>
+          </Transition>
+        </div>
+      </div>
     </header>
   )
 }

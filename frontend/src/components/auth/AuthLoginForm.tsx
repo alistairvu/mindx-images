@@ -1,17 +1,27 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import axios from "axios"
+import { UserContext } from "../../context/userContext"
+import { useHistory } from "react-router-dom"
 
 const AuthLoginForm: React.FC = () => {
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
   const [loginError, setLoginError] = useState<string>("")
+  const { loginCurrentUser } = useContext(UserContext)
+  const history = useHistory()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     try {
       const body = { user: { email, password } }
       const { data } = await axios.post("/api/auth/login", body)
+      loginCurrentUser({
+        token: data.token,
+        id: data.user._id,
+        email: data.user.email,
+      })
       console.log(data)
+      history.push("/")
     } catch (err) {
       console.log(err)
       setLoginError(err.response.data.message)

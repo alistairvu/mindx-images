@@ -62,8 +62,18 @@ export const checkStatus = async (req: Request, res: Response, next: any) => {
         .send({ success: 1, loggedIn: 0, message: "User not logged in" })
     }
 
-    const { _id } = jwt.verify(rawToken, process.env.JWT_SECRET) as {
-      _id: string
+    let _id: string
+    try {
+      const payload = jwt.verify(rawToken, process.env.JWT_SECRET) as {
+        _id: string
+      }
+      _id = payload._id
+    } catch (err) {
+      return res.send({
+        success: 1,
+        loggedIn: 0,
+        message: "User not logged in",
+      })
     }
 
     const user = await User.findById(_id)

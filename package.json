@@ -28,6 +28,7 @@
     "typescript": "^4.2.3"
   },
   "scripts": {
-    "dev": "concurrently \"nodemon\" \"cd tailwind && yarn start\""
+    "tw": "concurrently \"nodemon\" \"cd tailwind && yarn start\"",
+    "dev": "concurrently \"nodemon\" \"cd frontend && yarn start\""
   }
 }

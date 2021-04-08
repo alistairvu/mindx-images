@@ -2,24 +2,32 @@ import Container from "react-bootstrap/Container"
 import { useLocation } from "react-router-dom"
 import { AppHeader } from "./components"
 import { UserProvider } from "./context/userContext"
+import { HomePage, LogInPage, SignUpPage } from "./pages"
+import { Switch, Route } from "react-router-dom"
 
 const App: React.FC = () => {
   const location = useLocation()
 
   return (
     <UserProvider>
-      {location.pathname !== "/signup" && location.pathname !== "/login" && (
-        <AppHeader />
-      )}
+      <header>
+        {location.pathname !== "/signup" && location.pathname !== "/login" && (
+          <AppHeader />
+        )}
+      </header>
 
       <main>
-        <Container className="text-center py-5">
-          <h1>Welcome to React!</h1>
-          <h3 style={{ fontSize: 30 }}>
-            Get started by editing{" "}
-            <code style={{ color: "red" }}>src/App.tsx</code>
-          </h3>
-        </Container>
+        <Switch>
+          <Route exact path="/">
+            <HomePage />
+          </Route>
+          <Route path="/login">
+            <LogInPage />
+          </Route>
+          <Route path="/signup">
+            <SignUpPage />
+          </Route>
+        </Switch>
       </main>
     </UserProvider>
   )

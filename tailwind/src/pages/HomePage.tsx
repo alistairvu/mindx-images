@@ -1,4 +1,4 @@
-import { HomeCard } from "../components/home"
+import { HomeCard, HomePagination } from "../components/home"
 import { AppLoader } from "../components"
 import axiosClient from "../api"
 import { useQuery } from "react-query"
@@ -6,7 +6,9 @@ import { useQuery } from "react-query"
 const HomePage: React.FC = () => {
   const getPosts = async () => {
     try {
-      const { data } = await axiosClient.get("/api/posts")
+      const { data } = await axiosClient.get("/api/posts", {
+        params: { page: 1 },
+      })
       if (data.success) {
         return data
       }
@@ -38,7 +40,7 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="container">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         {postData.posts.map((post: any) => (
           <HomeCard
             createdBy={post.createdBy[0].email}
@@ -49,6 +51,10 @@ const HomePage: React.FC = () => {
           />
         ))}
       </div>
+      <HomePagination
+        pageCount={postData.pageCount}
+        pageNumber={postData.pageNumber}
+      />
     </div>
   )
 }

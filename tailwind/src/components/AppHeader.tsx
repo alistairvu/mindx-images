@@ -74,60 +74,62 @@ const AppHeader: React.FC = () => {
   }
 
   return (
-    <header className="sticky px-2 py-2 shadow sm:flex sm:justify-between sm:items-center md:px-4">
-      <div className="flex items-center justify-between">
-        <Link
-          to="/"
-          className="p-2 text-2xl font-bold rounded hover:bg-gray-100"
-        >
-          MindX Images
-        </Link>
+    <header className="sticky px-2 py-2 shadow-md md:px-4">
+      <div className="max-w-xl mx-auto sm:max-w-6xl sm:flex sm:justify-between sm:items-center">
+        <div className="flex items-center justify-between">
+          <Link
+            to="/"
+            className="p-2 text-2xl font-bold rounded hover:bg-gray-100"
+          >
+            MindX Images
+          </Link>
 
-        <button
-          className="block w-8 h-8 p-1 rounded sm:hidden hover:bg-gray-100 focus:outline-none focus:ring"
-          onClick={() => setIsHamburgerOpen((prev) => !prev)}
+          <button
+            className="block w-8 h-8 p-1 rounded sm:hidden hover:bg-gray-100 focus:outline-none focus:ring"
+            onClick={() => setIsHamburgerOpen((prev) => !prev)}
+          >
+            {isHamburgerOpen ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            )}
+          </button>
+        </div>
+
+        <nav
+          className={` ${
+            isHamburgerOpen ? "flex flex-col flex-grow items-start" : "hidden"
+          } sm:flex sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0`}
         >
-          {isHamburgerOpen ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          )}
-        </button>
+          {renderNavOptions()}
+        </nav>
       </div>
-
-      <nav
-        className={` ${
-          isHamburgerOpen ? "flex flex-col flex-grow items-start" : "hidden"
-        } sm:flex sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0`}
-      >
-        {renderNavOptions()}
-      </nav>
     </header>
   )
 }

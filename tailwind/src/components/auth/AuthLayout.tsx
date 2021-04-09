@@ -10,7 +10,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
 
 const Section: React.FC = ({ children }) => {
   return (
-    <div className="px-4 py-2 bg-white border border-gray-100 shadow rounded-md space-y-2">
+    <div className="px-4 py-2 space-y-2 bg-white border border-gray-100 rounded-md shadow">
       {children}
     </div>
   )

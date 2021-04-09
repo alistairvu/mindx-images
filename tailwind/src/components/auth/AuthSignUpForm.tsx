@@ -1,25 +1,38 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import axiosClient from "../../api"
+import { useForm } from "react-hook-form"
+import { useHistory } from "react-router-dom"
+
+interface SignUpInterface {
+  email: string
+  password: string
+  passwordConfirmation: string
+}
 
 const AuthSignUpForm: React.FC = () => {
-  const [email, setEmail] = useState<string>("")
-  const [password, setPassword] = useState<string>("")
-  const [passwordConfirmation, setPasswordConfirmation] = useState<string>("")
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<SignUpInterface>()
   const [signUpError, setSignUpError] = useState<string>("")
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const password = useRef<string>(null)
+  password.current = watch("password", "")
+
+  const history = useHistory()
+
+  const handleSignUp = async (signUpData: SignUpInterface) => {
     setSignUpError("")
-
-    if (password !== passwordConfirmation) {
-      setSignUpError("Passwords do not match!")
-      return
-    }
-
     try {
-      const body = { user: { email, password } }
+      const body = {
+        user: { email: signUpData.email, password: signUpData.password },
+      }
       const { data } = await axiosClient.post("/api/auth/signup", body)
-      console.log(data)
+      if (data.success) {
+        history.push("/")
+      }
     } catch (err) {
       console.log(err)
       setSignUpError(err.response.data.message)
@@ -31,18 +44,17 @@ const AuthSignUpForm: React.FC = () => {
   }, [])
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(handleSignUp)}>
       <label className="block my-1">
         <span>Email</span>
         <input
           type="email"
           className="input"
-          value={email}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setEmail(e.target.value)
-          }
-          required
+          {...register("email", { required: "You must have an email" })}
         />
+        {errors.email && (
+          <small className="text-red-700">{errors.email.message}</small>
+        )}
       </label>
 
       <label className="block my-1">
@@ -50,12 +62,11 @@ const AuthSignUpForm: React.FC = () => {
         <input
           type="password"
           className="input"
-          value={password}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setPassword(e.target.value)
-          }
-          required
+          {...register("password", { required: "You must have a password" })}
         />
+        {errors.password && (
+          <small className="text-red-700">{errors.password.message}</small>
+        )}
       </label>
 
       <label className="block my-1">
@@ -63,12 +74,16 @@ const AuthSignUpForm: React.FC = () => {
         <input
           type="password"
           className="input"
-          value={passwordConfirmation}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setPasswordConfirmation(e.target.value)
-          }
-          required
+          {...register("passwordConfirmation", {
+            validate: (value) =>
+              value === password.current || "Passwords must match",
+          })}
         />
+        {errors.passwordConfirmation && (
+          <small className="text-red-700">
+            {errors.passwordConfirmation.message}
+          </small>
+        )}
       </label>
 
       {signUpError && (

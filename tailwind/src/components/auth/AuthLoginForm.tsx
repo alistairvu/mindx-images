@@ -2,18 +2,28 @@ import { useState, useEffect, useContext } from "react"
 import axiosClient from "../../api"
 import { UserContext } from "../../context/userContext"
 import { useHistory } from "react-router-dom"
+import { useForm } from "react-hook-form"
+
+interface LoginDataInterface {
+  email: string
+  password: string
+}
 
 const AuthLoginForm: React.FC = () => {
-  const [email, setEmail] = useState<string>("")
-  const [password, setPassword] = useState<string>("")
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginDataInterface>()
   const [loginError, setLoginError] = useState<string>("")
   const { loginCurrentUser } = useContext(UserContext)
   const history = useHistory()
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const handleLogin = async (loginData: LoginDataInterface) => {
     try {
-      const body = { user: { email, password } }
+      const body = {
+        user: { email: loginData.email, password: loginData.password },
+      }
       const { data } = await axiosClient.post("/api/auth/login", body)
       loginCurrentUser({
         token: data.token,
@@ -33,17 +43,17 @@ const AuthLoginForm: React.FC = () => {
   }, [])
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(handleLogin)}>
       <label className="block my-1">
         <span>Email</span>
         <input
           type="email"
           className="input"
-          value={email}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setEmail(e.target.value)
-          }
+          {...register("email", { required: "You must have an email" })}
         />
+        {errors.email && (
+          <small className="text-red-700">{errors.email.message}</small>
+        )}
       </label>
 
       <label className="block my-1">
@@ -51,11 +61,11 @@ const AuthLoginForm: React.FC = () => {
         <input
           type="password"
           className="input"
-          value={password}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setPassword(e.target.value)
-          }
+          {...register("password", { required: "You must have a password" })}
         />
+        {errors.password && (
+          <small className="text-red-700">{errors.password.message}</small>
+        )}
       </label>
 
       {loginError && (
@@ -66,7 +76,7 @@ const AuthLoginForm: React.FC = () => {
 
       <button
         type="submit"
-        className="w-full px-4 py-2 my-1 font-semibold text-white bg-blue-600 focus:outline-none focus:ring hover:bg-blue-500 rounded-md"
+        className="w-full px-4 py-2 my-1 font-semibold text-white bg-blue-600 rounded-md focus:outline-none focus:ring hover:bg-blue-500"
       >
         Log In
       </button>

@@ -1,3 +1,4 @@
 import HomeCard from "./HomeCard"
+import HomePagination from "./HomePagination"
 
-export { HomeCard }
+export { HomeCard, HomePagination }

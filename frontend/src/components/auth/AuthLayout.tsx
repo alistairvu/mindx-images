@@ -34,7 +34,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
 
 const Section: React.FC = ({ children }) => {
   return (
-    <Card className="w-100 mb-4">
+    <Card className="mb-4 w-100">
       <Card.Body>{children}</Card.Body>
     </Card>
   )

@@ -12,9 +12,9 @@ const HomeCard: React.FC<HomeCardProps> = (props) => {
   return (
     <div className="w-full bg-white shadow-md rounded-md space-y-2">
       <Link to={`/posts/${props.id}`}>
-        <img src={props.imageUrl} alt="" className="rounded-t-md w-full" />
+        <img src={props.imageUrl} alt="" className="w-full rounded-t-md" />
       </Link>
-      <div className="py-2 px-4 space-y-4">
+      <div className="px-4 py-2 space-y-4">
         <div className="space-y-1">
           <Link to={`/posts/${props.id}`}>
             <h1 className="text-xl font-semibold text-blue-600 hover:text-blue-500">

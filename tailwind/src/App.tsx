@@ -1,9 +1,23 @@
 import { AppHeader } from "./components"
 import { Switch, Route, useLocation } from "react-router-dom"
 import { HomePage, SignUpPage, LoginPage, UploadPage, PostPage } from "./pages"
+import { useContext } from "react"
+import { UserContext } from "./context/userContext"
+import AppLoader from "./components/AppLoader"
 
 const App: React.FC = () => {
   const location = useLocation()
+  const { currentUser } = useContext(UserContext)
+
+  if (!currentUser.isLoaded) {
+    return (
+      <>
+        <div className="flex items-center justify-center w-screen h-screen">
+          <AppLoader />
+        </div>
+      </>
+    )
+  }
 
   return (
     <>

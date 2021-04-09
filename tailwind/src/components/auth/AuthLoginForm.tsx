@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react"
-import axios from "axios"
+import axiosClient from "../../api"
 import { UserContext } from "../../context/userContext"
 import { useHistory } from "react-router-dom"
 
@@ -14,7 +14,7 @@ const AuthLoginForm: React.FC = () => {
     e.preventDefault()
     try {
       const body = { user: { email, password } }
-      const { data } = await axios.post("/api/auth/login", body)
+      const { data } = await axiosClient.post("/api/auth/login", body)
       loginCurrentUser({
         token: data.token,
         id: data.user._id,
@@ -59,14 +59,14 @@ const AuthLoginForm: React.FC = () => {
       </label>
 
       {loginError && (
-        <div className="my-1 py-2 px-4 bg-red-100 border border-red-500 text-red-500 rounded-md">
+        <div className="px-4 py-2 my-1 text-red-500 bg-red-100 border border-red-500 rounded-md">
           {loginError}
         </div>
       )}
 
       <button
         type="submit"
-        className="py-2 px-4 bg-blue-600 focus:outline-none focus:ring hover:bg-blue-500 my-1 text-white font-semibold rounded-md w-full"
+        className="w-full px-4 py-2 my-1 font-semibold text-white bg-blue-600 focus:outline-none focus:ring hover:bg-blue-500 rounded-md"
       >
         Log In
       </button>

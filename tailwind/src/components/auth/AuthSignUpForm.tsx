@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import axios from "axios"
+import axiosClient from "../../api"
 
 const AuthSignUpForm: React.FC = () => {
   const [email, setEmail] = useState<string>("")
@@ -18,7 +18,7 @@ const AuthSignUpForm: React.FC = () => {
 
     try {
       const body = { user: { email, password } }
-      const { data } = await axios.post("/api/auth/signup", body)
+      const { data } = await axiosClient.post("/api/auth/signup", body)
       console.log(data)
     } catch (err) {
       console.log(err)
@@ -72,14 +72,14 @@ const AuthSignUpForm: React.FC = () => {
       </label>
 
       {signUpError && (
-        <div className="my-1 py-2 px-4 bg-red-100 border border-red-500 text-red-500 rounded-md">
+        <div className="px-4 py-2 my-1 text-red-500 bg-red-100 border border-red-500 rounded-md">
           {signUpError}
         </div>
       )}
 
       <button
         type="submit"
-        className="py-2 px-4 bg-blue-600 focus:outline-none focus:ring hover:bg-blue-500 my-1 text-white font-semibold rounded-md w-full"
+        className="w-full px-4 py-2 my-1 font-semibold text-white bg-blue-600 rounded-md focus:outline-none focus:ring hover:bg-blue-500"
       >
         Sign Up
       </button>

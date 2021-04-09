@@ -49,7 +49,6 @@ export const checkStatus = async (req: Request, res: Response, next: any) => {
   try {
     const token = req.headers.authorization
     const rawToken = token.split(" ")[1]
-    console.log(rawToken)
 
     if (
       !token ||

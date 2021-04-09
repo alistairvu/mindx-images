@@ -1,16 +1,20 @@
 import { useParams } from "react-router-dom"
-import axios from "axios"
+import axiosClient from "../api"
 import { AppLoader } from "../components"
-import useSWR from "swr"
-import { PostCommentList } from "../components/post"
+import { useQuery } from "react-query"
+import { PostCommentList, PostCommentForm } from "../components/post"
+import { useContext } from "react"
+import { UserContext } from "../context/userContext"
 
 const PostPage: React.FC = () => {
   const params = useParams<{ id: string }>()
   const { id: postId } = params
 
+  const { currentUser } = useContext(UserContext)
+
   const showPost = async () => {
     try {
-      const { data } = await axios.get(`/api/posts/${postId}`)
+      const { data } = await axiosClient.get(`/api/posts/${postId}`)
       if (data.success) {
         return data.post
       }
@@ -19,9 +23,14 @@ const PostPage: React.FC = () => {
     }
   }
 
-  const { data: postData } = useSWR(`/api/posts/${postId}`, showPost)
+  const {
+    data: postData,
+    isLoading,
+    error: postError,
+    refetch: commentRefetch,
+  } = useQuery(`/api/posts/${postId}`, showPost)
 
-  if (!postData) {
+  if (isLoading) {
     return (
       <div className="container">
         <AppLoader />
@@ -29,9 +38,17 @@ const PostPage: React.FC = () => {
     )
   }
 
+  if (postError) {
+    return (
+      <div className="px-4 py-2 my-1 text-red-500 bg-red-100 border border-red-500 rounded-md">
+        {postError}
+      </div>
+    )
+  }
+
   return (
     <div className="container">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <figure className="md:col-span-2">
           <img src={postData.imageUrl} alt={postData.title} />
         </figure>
@@ -40,16 +57,9 @@ const PostPage: React.FC = () => {
             <h1 className="text-2xl font-bold">Comments</h1>
             <PostCommentList comments={postData.comments} />
           </div>
-          <form className="p-2 shadow rounded-md space-y-2">
-            <input
-              className="input"
-              type="text"
-              placeholder="Enter your comment..."
-            />
-            <button className="font-semibold text-white py-2 px-4 bg-blue-600 hover:bg-blue-500 rounded-lg">
-              Add comment
-            </button>
-          </form>
+          {currentUser.isLoggedIn && (
+            <PostCommentForm refetch={commentRefetch} />
+          )}
         </section>
       </div>
     </div>

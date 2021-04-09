@@ -1,14 +1,31 @@
 import { useLocation } from "react-router-dom"
+import Spinner from "react-bootstrap/Spinner"
 import { AppHeader } from "./components"
-import { UserProvider } from "./context/userContext"
+import { UserContext } from "./context/userContext"
 import { HomePage, LogInPage, SignUpPage } from "./pages"
 import { Switch, Route } from "react-router-dom"
+import { useContext } from "react"
 
 const App: React.FC = () => {
   const location = useLocation()
+  const { isLoaded } = useContext(UserContext)
+
+  if (!isLoaded) {
+    return (
+      <>
+        {location.pathname !== "/signup" && location.pathname !== "/login" && (
+          <AppHeader />
+        )}
+
+        <main>
+          <Spinner animation="border" />
+        </main>
+      </>
+    )
+  }
 
   return (
-    <UserProvider>
+    <>
       <header>
         {location.pathname !== "/signup" && location.pathname !== "/login" && (
           <AppHeader />
@@ -28,7 +45,7 @@ const App: React.FC = () => {
           </Route>
         </Switch>
       </main>
-    </UserProvider>
+    </>
   )
 }
 

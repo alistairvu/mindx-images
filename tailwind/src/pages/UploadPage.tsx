@@ -27,7 +27,7 @@ const UploadPage: React.FC = () => {
 
         <label className="block mt-1 mb-2">
           <p className="mb-2">Image</p>
-          <label className="bg-blue-600 hover:bg-blue-500 font-semibold text-white py-2 px-4 rounded-lg mr-4 cursor-pointer">
+          <label className="px-4 py-2 mr-4 font-semibold text-white bg-blue-600 rounded-lg cursor-pointer hover:bg-blue-500">
             <span>Select an image</span>
             <input
               type="file"
@@ -41,7 +41,7 @@ const UploadPage: React.FC = () => {
 
         <button
           type="submit"
-          className="mt-2 bg-blue-600 hover:bg-blue-500 font-semibold text-white py-2 px-4 w-full rounded-lg"
+          className="w-full px-4 py-2 mt-2 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-500"
         >
           Submit
         </button>

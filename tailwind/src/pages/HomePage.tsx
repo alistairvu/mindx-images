@@ -1,12 +1,12 @@
 import { HomeCard } from "../components/home"
 import { AppLoader } from "../components"
-import axios from "axios"
-import useSWR from "swr"
+import axiosClient from "../api"
+import { useQuery } from "react-query"
 
 const HomePage: React.FC = () => {
   const getPosts = async () => {
     try {
-      const { data } = await axios.get("/api/posts")
+      const { data } = await axiosClient.get("/api/posts")
       if (data.success) {
         return data
       }
@@ -15,13 +15,23 @@ const HomePage: React.FC = () => {
     }
   }
 
-  const { data: postData } = useSWR("/api/posts", getPosts)
-  console.log(postData)
+  const { data: postData, isLoading, error: postError } = useQuery(
+    "/api/posts",
+    getPosts
+  )
 
-  if (!postData) {
+  if (isLoading) {
     return (
       <div className="container">
         <AppLoader />
+      </div>
+    )
+  }
+
+  if (postError) {
+    return (
+      <div className="px-4 py-2 my-1 text-red-500 bg-red-100 border border-red-500 rounded-md">
+        {postError}
       </div>
     )
   }

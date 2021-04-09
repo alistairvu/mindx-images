@@ -13,14 +13,14 @@ const AppHeader: React.FC = () => {
         <>
           <Link
             to="/signup"
-            className="block font-semibold text-blue-600 text-lg py-2 px-4 rounded hover:bg-gray-100"
+            className="block px-4 py-2 text-lg font-semibold text-blue-600 rounded hover:bg-gray-100"
             onClick={() => setIsHamburgerOpen(false)}
           >
             Sign up
           </Link>
           <Link
             to="/login"
-            className="block font-semibold text-blue-600 text-lg py-2 px-4 rounded hover:bg-gray-100"
+            className="block px-4 py-2 text-lg font-semibold text-blue-600 rounded hover:bg-gray-100"
           >
             Login
           </Link>
@@ -29,10 +29,10 @@ const AppHeader: React.FC = () => {
     }
 
     return (
-      <Menu as="div" className="relative focus:outline-none focus:ring">
+      <Menu as="nav" className="relative focus:outline-none focus:ring">
         {({ open }) => (
           <>
-            <Menu.Button className="block text-lg py-2 px-4 rounded hover:bg-gray-100 focus:outline-none">
+            <Menu.Button className="block px-4 py-2 text-lg rounded hover:bg-gray-100 focus:outline-none">
               Hello, {currentUser.user.email}!
             </Menu.Button>
             <Transition
@@ -51,7 +51,7 @@ const AppHeader: React.FC = () => {
                 <Link to="/upload">
                   <Menu.Item
                     as="a"
-                    className="block font-semibold text-lg py-2 px-4 rounded hover:bg-gray-100 focus:outline-none"
+                    className="block px-4 py-2 text-lg font-semibold rounded hover:bg-gray-100 focus:outline-none"
                   >
                     Upload
                   </Menu.Item>
@@ -60,7 +60,7 @@ const AppHeader: React.FC = () => {
                   <Menu.Item
                     as="a"
                     onClick={resetCurrentUser}
-                    className="block font-semibold text-lg py-2 px-4 rounded hover:bg-gray-100 focus:outline-none"
+                    className="block px-4 py-2 text-lg font-semibold rounded hover:bg-gray-100 focus:outline-none"
                   >
                     Logout
                   </Menu.Item>
@@ -74,23 +74,23 @@ const AppHeader: React.FC = () => {
   }
 
   return (
-    <header className="sm:flex sm:justify-between sm:items-center shadow py-2 px-2 md:px-4 sticky">
-      <div className="flex justify-between items-center">
+    <header className="sticky px-2 py-2 shadow sm:flex sm:justify-between sm:items-center md:px-4">
+      <div className="flex items-center justify-between">
         <Link
           to="/"
-          className="font-bold text-2xl p-2 rounded hover:bg-gray-100"
+          className="p-2 text-2xl font-bold rounded hover:bg-gray-100"
         >
           MindX Images
         </Link>
 
         <button
-          className="block sm:hidden w-8 h-8 p-1 hover:bg-gray-100 rounded focus:outline-none focus:ring"
+          className="block w-8 h-8 p-1 rounded sm:hidden hover:bg-gray-100 focus:outline-none focus:ring"
           onClick={() => setIsHamburgerOpen((prev) => !prev)}
         >
           {isHamburgerOpen ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
+              className="w-6 h-6"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -105,7 +105,7 @@ const AppHeader: React.FC = () => {
           ) : (
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
+              className="w-6 h-6"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -121,13 +121,13 @@ const AppHeader: React.FC = () => {
         </button>
       </div>
 
-      <div
+      <nav
         className={` ${
           isHamburgerOpen ? "flex flex-col flex-grow items-start" : "hidden"
         } sm:flex sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0`}
       >
         {renderNavOptions()}
-      </div>
+      </nav>
     </header>
   )
 }

@@ -15,6 +15,7 @@ const HomePagination: React.FC<HomePaginationProps> = ({
         i === pageNumber
           ? "text-white bg-blue-500 border-blue-500 hover:border-blue-600"
           : "border-gray-200 hover:bg-gray-50"
+
       if (i === 1) {
         buttons.push(
           <button

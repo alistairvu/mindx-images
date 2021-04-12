@@ -3,11 +3,13 @@ import { useHistory } from "react-router-dom"
 interface HomePaginationProps {
   pageCount: number
   pageNumber: number
+  handlePageChange: (page: number) => void
 }
 
 const HomePagination: React.FC<HomePaginationProps> = ({
   pageCount,
   pageNumber,
+  handlePageChange,
 }) => {
   const history = useHistory()
 
@@ -26,7 +28,7 @@ const HomePagination: React.FC<HomePaginationProps> = ({
             className={`w-8 h-8 border ${
               pageCount === 1 ? "rounded" : "rounded-r-none border-r-0"
             } ${colors} focus:outline-none focus:ring focus:ring-blue-200 focus:ring-opacity-50`}
-            onClick={() => history.push("/")}
+            onClick={() => handlePageChange(i)}
           >
             {i}
           </button>
@@ -35,7 +37,7 @@ const HomePagination: React.FC<HomePaginationProps> = ({
         paginationButtons.push(
           <button
             className={`w-8 h-8 border rounded-l-none ${colors} focus:outline-none focus:ring focus:ring-blue-200 focus:ring-opacity-50`}
-            onClick={() => history.push(`/?page=${i}`)}
+            onClick={() => handlePageChange(i)}
           >
             {i}
           </button>
@@ -44,7 +46,7 @@ const HomePagination: React.FC<HomePaginationProps> = ({
         paginationButtons.push(
           <button
             className={`w-8 h-8 border border-r-0 rounded-none focus:outline-none ${colors} focus:ring focus:ring-blue-200 focus:ring-opacity-50`}
-            onClick={() => history.push(`/?page=${i}`)}
+            onClick={() => handlePageChange(i)}
           >
             {i}
           </button>

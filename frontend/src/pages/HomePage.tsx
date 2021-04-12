@@ -1,16 +1,28 @@
 import HomeCard from "../components/home/HomeCard"
 import Spinner from "react-bootstrap/Spinner"
 import Container from "react-bootstrap/Container"
+import Pagination from "react-bootstrap/Pagination"
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
-import axios from "axios"
-import useSWR from "swr"
+import axiosClient from "../api"
+import { useRef } from "react"
+import { useQuery } from "react-query"
+import { useHistory, useLocation } from "react-router-dom"
 
 const HomePage: React.FC = () => {
+  const pageCount = useRef<number>(1)
+  const history = useHistory()
+  const location = useLocation()
+  const urlParams = new URLSearchParams(location.search)
+  const page = Number(urlParams.get("page")) || 1
+
   const getPosts = async () => {
     try {
-      const { data } = await axios.get("/api/posts")
+      const { data } = await axiosClient.get("/api/posts", {
+        params: { page: page },
+      })
       if (data.success) {
+        pageCount.current = data.pageCount
         return data
       }
     } catch (err) {
@@ -18,15 +30,34 @@ const HomePage: React.FC = () => {
     }
   }
 
-  const { data: postData } = useSWR("/api/posts", getPosts)
+  const { data: postData, isFetching } = useQuery(
+    ["/api/posts", page],
+    getPosts
+  )
   console.log(postData)
 
-  if (!postData) {
+  if (isFetching && !postData) {
     return (
       <Container className="mt-3 d-flex justify-content-center align-items-center">
         <Spinner animation="border" />
       </Container>
     )
+  }
+
+  const renderPagination = () => {
+    const paginations = []
+    for (let i = 1; i <= pageCount.current; i++) {
+      paginations.push(
+        <Pagination.Item
+          key={i}
+          active={i === page}
+          onClick={() => history.push(`/?page=${i}`)}
+        >
+          {i}
+        </Pagination.Item>
+      )
+    }
+    return paginations
   }
 
   return (
@@ -44,6 +75,7 @@ const HomePage: React.FC = () => {
           </Col>
         ))}
       </Row>
+      {renderPagination()}
     </Container>
   )
 }

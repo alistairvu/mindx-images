@@ -2,7 +2,7 @@ import Form from "react-bootstrap/Form"
 import Button from "react-bootstrap/Button"
 import Alert from "react-bootstrap/Alert"
 import { useState, useEffect } from "react"
-import axios from "axios"
+import axiosClient from "../../api"
 
 const AuthSignUpForm: React.FC = () => {
   const [email, setEmail] = useState<string>("")
@@ -21,7 +21,7 @@ const AuthSignUpForm: React.FC = () => {
 
     try {
       const body = { user: { email, password } }
-      const { data } = await axios.post("/api/auth/signup", body)
+      const { data } = await axiosClient.post("/api/auth/signup", body)
       console.log(data)
     } catch (err) {
       console.log(err)

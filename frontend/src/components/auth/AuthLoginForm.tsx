@@ -2,7 +2,7 @@ import Form from "react-bootstrap/Form"
 import Button from "react-bootstrap/Button"
 import Alert from "react-bootstrap/Alert"
 import { useState, useEffect, useContext } from "react"
-import axios from "axios"
+import axiosClient from "../../api"
 import { useHistory } from "react-router-dom"
 import { UserContext } from "../../context/userContext"
 
@@ -17,7 +17,7 @@ const AuthLoginForm: React.FC = () => {
     e.preventDefault()
     try {
       const body = { user: { email, password } }
-      const { data } = await axios.post("/api/auth/login", body)
+      const { data } = await axiosClient.post("/api/auth/login", body)
       loginCurrentUser({
         token: data.token,
         id: data.user._id,

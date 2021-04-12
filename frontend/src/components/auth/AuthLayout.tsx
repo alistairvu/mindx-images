@@ -1,42 +1,18 @@
-import Container from "react-bootstrap/Container"
-import Card from "react-bootstrap/Card"
-import Col from "react-bootstrap/Col"
-import Row from "react-bootstrap/Row"
-import { useEffect, useContext, ReactNode } from "react"
-import { useHistory } from "react-router-dom"
-import { UserContext } from "../../context/userContext"
+import { ReactNode } from "react"
 
 const AuthLayout = ({ children }: { children: ReactNode }) => {
-  const { currentUser } = useContext(UserContext)
-  const history = useHistory()
-
-  useEffect(() => {
-    if (currentUser.isLoggedIn) {
-      history.replace("/")
-    }
-  }, [history, currentUser.isLoggedIn])
-
   return (
-    <div className="bg-light">
-      <Container>
-        <Row>
-          <Col
-            md={{ span: 6, offset: 3 }}
-            className="vh-100 d-flex flex-column justify-content-center"
-          >
-            {children}
-          </Col>
-        </Row>
-      </Container>
+    <div className="flex items-center justify-center w-screen h-screen bg-gray-100">
+      <div className="container space-y-4">{children}</div>
     </div>
   )
 }
 
 const Section: React.FC = ({ children }) => {
   return (
-    <Card className="mb-4 w-100">
-      <Card.Body>{children}</Card.Body>
-    </Card>
+    <div className="px-4 py-2 space-y-2 bg-white border border-gray-100 rounded-md shadow">
+      {children}
+    </div>
   )
 }
 

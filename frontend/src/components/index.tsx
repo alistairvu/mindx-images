@@ -1,3 +1,4 @@
 import AppHeader from "./AppHeader"
+import AppLoader from "./AppLoader"
 
-export { AppHeader }
+export { AppHeader, AppLoader }

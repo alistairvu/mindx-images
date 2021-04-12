@@ -1,26 +1,23 @@
 import { Link } from "react-router-dom"
 import { AuthSignUpForm, AuthLayout } from "../components/auth"
-import Card from "react-bootstrap/Card"
 
-const LoginPage: React.FC = () => {
+const SignUpPage: React.FC = () => {
   return (
     <AuthLayout>
       <AuthLayout.Section>
-        <Card.Body>
-          <Card.Title className="mb-3">Sign Up</Card.Title>
-          <AuthSignUpForm />
-        </Card.Body>
+        <h1 className="text-2xl font-bold text-center">Sign Up</h1>
+        <AuthSignUpForm />
       </AuthLayout.Section>
       <AuthLayout.Section>
-        <Card.Body>
-          <Card.Text>
-            Already has an account?{" "}
-            <Link to="/login">Click here to log in.</Link>
-          </Card.Text>
-        </Card.Body>
+        <p>
+          Already has an account?{" "}
+          <Link to="/login" className="text-blue-600 hover:text-blue-500">
+            Click here to log in.
+          </Link>
+        </p>
       </AuthLayout.Section>
     </AuthLayout>
   )
 }
 
-export default LoginPage
+export default SignUpPage

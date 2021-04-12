@@ -1,28 +1,15 @@
-import HomeCard from "../components/home/HomeCard"
-import Spinner from "react-bootstrap/Spinner"
-import Container from "react-bootstrap/Container"
-import Pagination from "react-bootstrap/Pagination"
-import Row from "react-bootstrap/Row"
-import Col from "react-bootstrap/Col"
+import { HomeCard, HomePagination } from "../components/home"
+import { AppLoader } from "../components"
 import axiosClient from "../api"
-import { useRef } from "react"
 import { useQuery } from "react-query"
-import { useHistory, useLocation } from "react-router-dom"
 
 const HomePage: React.FC = () => {
-  const pageCount = useRef<number>(1)
-  const history = useHistory()
-  const location = useLocation()
-  const urlParams = new URLSearchParams(location.search)
-  const page = Number(urlParams.get("page")) || 1
-
   const getPosts = async () => {
     try {
       const { data } = await axiosClient.get("/api/posts", {
-        params: { page: page },
+        params: { page: 1 },
       })
       if (data.success) {
-        pageCount.current = data.pageCount
         return data
       }
     } catch (err) {
@@ -30,53 +17,45 @@ const HomePage: React.FC = () => {
     }
   }
 
-  const { data: postData, isFetching } = useQuery(
-    ["/api/posts", page],
+  const { data: postData, isLoading, error: postError } = useQuery(
+    "/api/posts",
     getPosts
   )
-  console.log(postData)
 
-  if (isFetching && !postData) {
+  if (isLoading) {
     return (
-      <Container className="mt-3 d-flex justify-content-center align-items-center">
-        <Spinner animation="border" />
-      </Container>
+      <div className="container">
+        <AppLoader />
+      </div>
     )
   }
 
-  const renderPagination = () => {
-    const paginations = []
-    for (let i = 1; i <= pageCount.current; i++) {
-      paginations.push(
-        <Pagination.Item
-          key={i}
-          active={i === page}
-          onClick={() => history.push(`/?page=${i}`)}
-        >
-          {i}
-        </Pagination.Item>
-      )
-    }
-    return paginations
+  if (postError) {
+    return (
+      <div className="px-4 py-2 my-1 text-red-500 bg-red-100 border border-red-500 rounded-md">
+        {postError}
+      </div>
+    )
   }
 
   return (
-    <Container className="mt-3">
-      <Row>
+    <div className="container">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         {postData.posts.map((post: any) => (
-          <Col lg={3} md={6} key={post._id}>
-            <HomeCard
-              createdBy={post.createdBy[0].email}
-              description={post.description}
-              imageUrl={post.imageUrl}
-              title={post.title}
-              id={post._id}
-            />
-          </Col>
+          <HomeCard
+            createdBy={post.createdBy[0].email}
+            description={post.description}
+            imageUrl={post.imageUrl}
+            title={post.title}
+            id={post._id}
+          />
         ))}
-      </Row>
-      {renderPagination()}
-    </Container>
+      </div>
+      <HomePagination
+        pageCount={postData.pageCount}
+        pageNumber={postData.pageNumber}
+      />
+    </div>
   )
 }
 

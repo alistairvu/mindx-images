@@ -1,23 +1,20 @@
 import { Link } from "react-router-dom"
 import { AuthLoginForm, AuthLayout } from "../components/auth"
-import Card from "react-bootstrap/Card"
 
 const LoginPage: React.FC = () => {
   return (
     <AuthLayout>
       <AuthLayout.Section>
-        <Card.Body>
-          <Card.Title className="mb-3">Log In</Card.Title>
-          <AuthLoginForm />
-        </Card.Body>
+        <h1 className="text-2xl font-bold text-center">Login</h1>
+        <AuthLoginForm />
       </AuthLayout.Section>
       <AuthLayout.Section>
-        <Card.Body>
-          <Card.Text>
-            New to MindX Images?{" "}
-            <Link to="/signup">Click here to sign up.</Link>
-          </Card.Text>
-        </Card.Body>
+        <p>
+          New to MindX Images?{" "}
+          <Link to="/signup" className="text-blue-600 hover:text-blue-500">
+            Click here to sign up.
+          </Link>
+        </p>
       </AuthLayout.Section>
     </AuthLayout>
   )

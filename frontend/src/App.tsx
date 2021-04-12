@@ -1,48 +1,48 @@
-import { useLocation } from "react-router-dom"
-import Spinner from "react-bootstrap/Spinner"
 import { AppHeader } from "./components"
-import { UserContext } from "./context/userContext"
-import { HomePage, LogInPage, SignUpPage } from "./pages"
-import { Switch, Route } from "react-router-dom"
+import { Switch, Route, useLocation } from "react-router-dom"
+import { HomePage, SignUpPage, LoginPage, UploadPage, PostPage } from "./pages"
 import { useContext } from "react"
+import { UserContext } from "./context/userContext"
+import AppLoader from "./components/AppLoader"
 
 const App: React.FC = () => {
   const location = useLocation()
-  const { isLoaded } = useContext(UserContext)
+  const { currentUser } = useContext(UserContext)
 
-  if (!isLoaded) {
+  if (!currentUser.isLoaded) {
     return (
       <>
-        {location.pathname !== "/signup" && location.pathname !== "/login" && (
-          <AppHeader />
-        )}
-
-        <main>
-          <Spinner animation="border" />
-        </main>
+        <div className="flex items-center justify-center w-screen h-screen">
+          <AppLoader />
+        </div>
       </>
     )
   }
 
   return (
     <>
-      <header>
-        {location.pathname !== "/signup" && location.pathname !== "/login" && (
-          <AppHeader />
-        )}
-      </header>
+      {location.pathname !== "/signup" && location.pathname !== "/login" && (
+        <AppHeader />
+      )}
 
       <main>
         <Switch>
           <Route exact path="/">
             <HomePage />
           </Route>
-          <Route path="/login">
-            <LogInPage />
-          </Route>
           <Route path="/signup">
             <SignUpPage />
           </Route>
+          <Route path="/login">
+            <LoginPage />
+          </Route>
+          <Route path="/upload">
+            <UploadPage />
+          </Route>
+          <Route path="/posts/:id">
+            <PostPage />
+          </Route>
+          <Route path="*"></Route>
         </Switch>
       </main>
     </>

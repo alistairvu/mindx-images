@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react"
-import axiosClient from "../api"
+import axios from "axios"
 
 interface UserInfoInterface {
   id: string
@@ -27,7 +27,13 @@ export const UserProvider: React.FC = ({ children }) => {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        const { data } = await axiosClient.get("/api/auth/status")
+        const config = {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem("jwt")}`,
+          },
+        }
+
+        const { data } = await axios.get("/api/auth/status", config)
 
         if (data.success && data.loggedIn) {
           setCurrentUser({

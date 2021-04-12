@@ -4,6 +4,7 @@ import { HomePage, SignUpPage, LoginPage, UploadPage, PostPage } from "./pages"
 import { useContext } from "react"
 import { UserContext } from "./context/userContext"
 import AppLoader from "./components/AppLoader"
+import { PublicRoute, GuestRoute, ProtectedRoute } from "./components/routes"
 
 const App: React.FC = () => {
   const location = useLocation()
@@ -27,21 +28,21 @@ const App: React.FC = () => {
 
       <main>
         <Switch>
-          <Route exact path="/">
+          <PublicRoute exact path="/">
             <HomePage />
-          </Route>
-          <Route path="/signup">
+          </PublicRoute>
+          <GuestRoute path="/signup">
             <SignUpPage />
-          </Route>
-          <Route path="/login">
+          </GuestRoute>
+          <GuestRoute path="/login">
             <LoginPage />
-          </Route>
-          <Route path="/upload">
+          </GuestRoute>
+          <ProtectedRoute path="/upload">
             <UploadPage />
-          </Route>
-          <Route path="/posts/:id">
+          </ProtectedRoute>
+          <PublicRoute path="/posts/:id">
             <PostPage />
-          </Route>
+          </PublicRoute>
           <Route path="*"></Route>
         </Switch>
       </main>

@@ -1,20 +1,7 @@
-import { Link, useHistory } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { AuthLoginForm, AuthLayout } from "../components/auth"
-import { useEffect, useContext } from "react"
-import { UserContext } from "../context/userContext"
 
 const LoginPage: React.FC = () => {
-  const {
-    currentUser: { isLoggedIn },
-  } = useContext(UserContext)
-  const history = useHistory()
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      history.push("/")
-    }
-  }, [isLoggedIn, history])
-
   return (
     <AuthLayout>
       <AuthLayout.Section>

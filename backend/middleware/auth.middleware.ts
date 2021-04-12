@@ -1,48 +1,46 @@
-import { promisify } from "es6-promisify"
+import { Request, Response, NextFunction } from "express"
 import jwt from "jsonwebtoken"
-import { Request, Response } from "express"
-import User from "../modules/auth/user"
+
+import User, { UserSchemaInterface } from "../modules/auth/user"
 import HTTPError from "../httpError"
-import { UserSchemaInterface } from "../modules/auth/user"
 
 export interface RequestWithUser extends Request {
   user: UserSchemaInterface
 }
 
+// GET /api/auth/status
 export const protect = async (
   req: RequestWithUser,
   res: Response,
-  next: any
+  next: NextFunction
 ) => {
   try {
-    const token = req.headers.authorization
-    const rawToken = token.split(" ")[1]
+    const token = req.headers.authorization.split(" ")[1]
 
-    if (
-      !token ||
-      !token.startsWith("Bearer ") ||
-      !rawToken ||
-      rawToken === "undefined"
-    ) {
-      console.log("no authorization")
-      return res
-        .status(200)
-        .send({ success: 1, loggedIn: 0, message: "User not logged in" })
+    if (!token) {
+      throw new HTTPError("Invalid request", 401)
     }
 
-    const { _id } = jwt.verify(rawToken, process.env.JWT_SECRET) as {
-      _id: string
+    let _id: string
+
+    try {
+      const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) as {
+        _id: string
+      }
+      _id = payload._id
+    } catch (err) {
+      throw new HTTPError("Invalid token", 403)
     }
 
     const user = await User.findById(_id)
 
     if (!user) {
-      throw new HTTPError("User not authorised", 401)
+      throw new HTTPError("Invalid request", 404)
     }
 
     req.user = user
     next()
   } catch (err) {
-    next(new HTTPError(err.message, 401))
+    next(err)
   }
 }

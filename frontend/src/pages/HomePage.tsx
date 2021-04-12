@@ -7,7 +7,7 @@ import { useQuery } from "react-query"
 
 const HomePage: React.FC = () => {
   const [activePage, setActivePage] = useState(1)
-  const pageSize = 1
+  const pageSize = 4
 
   const getPosts = async () => {
     try {

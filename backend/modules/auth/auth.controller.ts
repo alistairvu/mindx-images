@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import createToken from "../../utils/jwt"
+import { generateAccessToken, generateRefreshToken } from "../../utils/jwt"
 import jwt from "jsonwebtoken"
 import User from "./user"
 import HTTPError from "../../httpError"
@@ -16,8 +16,24 @@ export const createUser = async (req: Request, res: Response, next: any) => {
 
     const newUser = await User.create({ email, password })
 
-    const token = createToken(newUser._id)
-    res.send({ success: 1, loggedIn: 1, user: newUser, token: token })
+    const accessToken = generateAccessToken(newUser._id)
+    const refreshToken = generateRefreshToken(newUser._id)
+
+    newUser.refreshTokens.push(refreshToken)
+    newUser.save()
+
+    res.cookie("refreshToken", refreshToken, {
+      path: "/",
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      maxAge: 10 * 365 * 24 * 3600 * 1000,
+    })
+    res.send({
+      success: 1,
+      loggedIn: 1,
+      user: { _id: newUser._id, email: newUser.email },
+      token: accessToken,
+    })
   } catch (err) {
     next(err)
   }
@@ -37,51 +53,25 @@ export const loginUser = async (req: Request, res: Response, next: any) => {
       throw new HTTPError("Wrong email/password combination.", 401)
     }
 
-    const token = createToken(matchingUser._id)
-    res.send({ success: 1, loggedIn: 1, user: matchingUser, token: token })
-  } catch (err) {
-    next(err)
-  }
-}
+    const accessToken = generateAccessToken(matchingUser._id)
+    const refreshToken = generateRefreshToken(matchingUser._id)
 
-// GET api/auth/status
-export const checkStatus = async (req: Request, res: Response, next: any) => {
-  try {
-    const token = req.headers.authorization
-    const rawToken = token.split(" ")[1]
+    matchingUser.refreshTokens.push(refreshToken)
+    matchingUser.save()
 
-    if (
-      !token ||
-      !token.startsWith("Bearer ") ||
-      !rawToken ||
-      rawToken === "undefined"
-    ) {
-      return res
-        .status(200)
-        .send({ success: 1, loggedIn: 0, message: "User not logged in" })
-    }
+    res.cookie("refreshToken", refreshToken, {
+      path: "/",
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      maxAge: 10 * 365 * 24 * 3600 * 1000,
+    })
 
-    let _id: string
-    try {
-      const payload = jwt.verify(rawToken, process.env.JWT_SECRET) as {
-        _id: string
-      }
-      _id = payload._id
-    } catch (err) {
-      return res.send({
-        success: 1,
-        loggedIn: 0,
-        message: "User not logged in",
-      })
-    }
-
-    const user = await User.findById(_id)
-
-    if (!user) {
-      throw new HTTPError("Wrong credentials", 401)
-    }
-
-    res.send({ success: 1, loggedIn: 1, user: user })
+    res.send({
+      success: 1,
+      loggedIn: 1,
+      user: { _id: matchingUser._id, email: matchingUser.email },
+      token: accessToken,
+    })
   } catch (err) {
     next(err)
   }
@@ -90,6 +80,20 @@ export const checkStatus = async (req: Request, res: Response, next: any) => {
 // DELETE api/auth/logout
 export const logoutUser = async (req: Request, res: Response, next: any) => {
   try {
+    const { refreshToken } = req.cookies
+    const { _id } = jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    ) as { _id: string }
+
+    await User.findByIdAndUpdate(_id, {
+      $pull: {
+        refreshTokens: refreshToken,
+      },
+    })
+
+    res.clearCookie("refreshToken")
+
     res.send({ success: 1, loggedOut: 1 })
   } catch (err) {
     next(err)

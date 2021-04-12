@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .container {
-  @apply max-w-xl px-4 py-4 mx-auto md:max-w-6xl md:px-6;
+  @apply max-w-xl px-4 py-4 mx-auto md:max-w-5xl md:px-6;
 }
 
 .input {

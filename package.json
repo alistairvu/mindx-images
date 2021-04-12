@@ -28,7 +28,7 @@
     "typescript": "^4.2.3"
   },
   "scripts": {
-    "bs": "concurrently \"nodemon\" \"cd bootstrap && yarn start\"",
+    "bs": "concurrently \"nodemon\" \"cd boot && yarn start\"",
     "dev": "concurrently \"nodemon\" \"cd frontend && yarn start\""
   }
 }

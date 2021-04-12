@@ -1,3 +1,5 @@
+import { useHistory } from "react-router-dom"
+
 interface HomePaginationProps {
   pageCount: number
   pageNumber: number
@@ -7,8 +9,10 @@ const HomePagination: React.FC<HomePaginationProps> = ({
   pageCount,
   pageNumber,
 }) => {
+  const history = useHistory()
+
   const renderButtons = () => {
-    const buttons = []
+    const paginationButtons = []
 
     for (let i = 1; i <= pageCount; i++) {
       const colors =
@@ -17,25 +21,30 @@ const HomePagination: React.FC<HomePaginationProps> = ({
           : "border-gray-200 hover:bg-gray-50"
 
       if (i === 1) {
-        buttons.push(
+        paginationButtons.push(
           <button
             className={`w-8 h-8 border ${
-              pageCount === 1 ? "rounded" : "rounded-r-none"
-            } ${colors}`}
+              pageCount === 1 ? "rounded" : "rounded-r-none border-r-0"
+            } ${colors} focus:outline-none focus:ring focus:ring-blue-200 focus:ring-opacity-50`}
+            onClick={() => history.push("/")}
           >
             {i}
           </button>
         )
-      } else if (i === 4) {
-        buttons.push(
-          <button className={`w-8 h-8 border rounded-l-none ${colors}`}>
+      } else if (i === pageCount) {
+        paginationButtons.push(
+          <button
+            className={`w-8 h-8 border rounded-l-none ${colors} focus:outline-none focus:ring focus:ring-blue-200 focus:ring-opacity-50`}
+            onClick={() => history.push(`/?page=${i}`)}
+          >
             {i}
           </button>
         )
       } else {
-        buttons.push(
+        paginationButtons.push(
           <button
-            className={`w-8 h-8 border-t border-b rounded-none ${colors}`}
+            className={`w-8 h-8 border border-r-0 rounded-none focus:outline-none ${colors} focus:ring focus:ring-blue-200 focus:ring-opacity-50`}
+            onClick={() => history.push(`/?page=${i}`)}
           >
             {i}
           </button>
@@ -43,7 +52,7 @@ const HomePagination: React.FC<HomePaginationProps> = ({
       }
     }
 
-    return buttons
+    return paginationButtons
   }
 
   return <div className="mt-4">{renderButtons()}</div>

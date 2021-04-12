@@ -2,12 +2,18 @@ import { HomeCard, HomePagination } from "../components/home"
 import { AppLoader } from "../components"
 import axiosClient from "../api"
 import { useQuery } from "react-query"
+import { useLocation } from "react-router-dom"
 
 const HomePage: React.FC = () => {
+  const location = useLocation()
+  const URLParams = new URLSearchParams(location.search)
+  const page = Number(URLParams.get("page")) || 1
+  const pageSize = 4
+
   const getPosts = async () => {
     try {
       const { data } = await axiosClient.get("/api/posts", {
-        params: { page: 1 },
+        params: { page: page, pageSize: pageSize },
       })
       if (data.success) {
         return data
@@ -18,7 +24,7 @@ const HomePage: React.FC = () => {
   }
 
   const { data: postData, isLoading, error: postError } = useQuery(
-    "/api/posts",
+    ["/api/posts", page],
     getPosts
   )
 

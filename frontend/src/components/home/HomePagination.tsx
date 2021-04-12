@@ -1,5 +1,3 @@
-import { useHistory } from "react-router-dom"
-
 interface HomePaginationProps {
   pageCount: number
   pageNumber: number
@@ -11,8 +9,6 @@ const HomePagination: React.FC<HomePaginationProps> = ({
   pageNumber,
   handlePageChange,
 }) => {
-  const history = useHistory()
-
   const renderButtons = () => {
     const paginationButtons = []
 

@@ -46,21 +46,24 @@ const HomePage: React.FC = () => {
   return (
     <div className="container">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {postData.posts.map((post: any) => (
-          <HomeCard
-            createdBy={post.createdBy[0].email}
-            description={post.description}
-            imageUrl={post.imageUrl}
-            title={post.title}
-            id={post._id}
-          />
-        ))}
+        {postData &&
+          postData.posts.map((post: any) => (
+            <HomeCard
+              createdBy={post.createdBy[0].email}
+              description={post.description}
+              imageUrl={post.imageUrl}
+              title={post.title}
+              id={post._id}
+            />
+          ))}
       </div>
-      <HomePagination
-        pageCount={postData.pageCount}
-        pageNumber={postData.pageNumber}
-        handlePageChange={setActivePage}
-      />
+      {postData && (
+        <HomePagination
+          pageCount={postData.pageCount}
+          pageNumber={postData.pageNumber}
+          handlePageChange={setActivePage}
+        />
+      )}
     </div>
   )
 }

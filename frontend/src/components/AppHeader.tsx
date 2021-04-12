@@ -1,11 +1,23 @@
 import { useState, useContext } from "react"
 import { Link } from "react-router-dom"
 import { Menu, Transition } from "@headlessui/react"
+import axiosClient from "../api"
 import { UserContext } from "../context/userContext"
 
 const AppHeader: React.FC = () => {
   const [isHamburgerOpen, setIsHamburgerOpen] = useState<boolean>(false)
   const { currentUser, resetCurrentUser } = useContext(UserContext)
+
+  const handleLogout = async () => {
+    try {
+      const { data } = await axiosClient.delete("/api/auth/logout")
+      if (data.success && data.loggedOut) {
+        resetCurrentUser()
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   const renderNavOptions = () => {
     if (!currentUser.isLoggedIn) {
@@ -56,15 +68,13 @@ const AppHeader: React.FC = () => {
                     Upload
                   </Menu.Item>
                 </Link>
-                <Link to="/login">
-                  <Menu.Item
-                    as="a"
-                    onClick={resetCurrentUser}
-                    className="block px-4 py-2 text-lg font-semibold rounded hover:bg-gray-100 focus:outline-none"
-                  >
-                    Logout
-                  </Menu.Item>
-                </Link>
+                <Menu.Item
+                  as="a"
+                  onClick={handleLogout}
+                  className="block px-4 py-2 text-lg font-semibold rounded cursor-pointer hover:bg-gray-100 focus:outline-none"
+                >
+                  Logout
+                </Menu.Item>
               </Menu.Items>
             </Transition>
           </>

@@ -32,7 +32,7 @@ UserSchema.index({
 
 UserSchema.pre("save", function (this: UserSchemaInterface, next: any) {
   if (!this.isModified("password")) {
-    next()
+    return next()
   }
 
   const salt = bcrypt.genSaltSync(10)

@@ -1,7 +1,20 @@
-import { Link } from "react-router-dom"
+import { useContext, useEffect } from "react"
+import { Link, useHistory } from "react-router-dom"
 import { AuthSignUpForm, AuthLayout } from "../components/auth"
+import { UserContext } from "../context/userContext"
 
 const SignUpPage: React.FC = () => {
+  const {
+    currentUser: { isLoggedIn },
+  } = useContext(UserContext)
+  const history = useHistory()
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      history.push("/")
+    }
+  }, [isLoggedIn, history])
+
   return (
     <AuthLayout>
       <AuthLayout.Section>

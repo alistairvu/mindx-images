@@ -1,7 +1,20 @@
-import { useRef } from "react"
+import { useContext, useEffect, useRef } from "react"
+import { useHistory } from "react-router-dom"
+import { UserContext } from "../context/userContext"
 
 const UploadPage: React.FC = () => {
   const fileNameRef = useRef<HTMLElement>(null)
+
+  const {
+    currentUser: { isLoggedIn },
+  } = useContext(UserContext)
+  const history = useHistory()
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      history.replace("/login")
+    }
+  }, [isLoggedIn, history])
 
   const handleFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files[0]

@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs"
 export interface UserSchemaInterface extends mongoose.Document {
   email: string
   password: string
-  refreshTokens: string[]
   checkPassword: (password: string) => boolean
 }
 
@@ -17,10 +16,6 @@ const UserSchema = new mongoose.Schema<UserSchemaInterface>(
     password: {
       type: String,
       required: true,
-    },
-    refreshTokens: {
-      type: [String],
-      default: [],
     },
   },
   { timestamps: true }

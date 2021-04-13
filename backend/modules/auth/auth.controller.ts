@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt"
+import { saddAsync, sremAsync } from "../../redis"
 import jwt from "jsonwebtoken"
 import User from "./user"
 import HTTPError from "../../httpError"
@@ -19,8 +20,7 @@ export const createUser = async (req: Request, res: Response, next: any) => {
     const accessToken = generateAccessToken(newUser._id)
     const refreshToken = generateRefreshToken(newUser._id)
 
-    newUser.refreshTokens.push(refreshToken)
-    newUser.save()
+    await saddAsync(`refresh-tokens-${newUser._id}`, refreshToken)
 
     res.cookie("refreshToken", refreshToken, {
       path: "/",
@@ -56,8 +56,7 @@ export const loginUser = async (req: Request, res: Response, next: any) => {
     const accessToken = generateAccessToken(matchingUser._id)
     const refreshToken = generateRefreshToken(matchingUser._id)
 
-    matchingUser.refreshTokens.push(refreshToken)
-    matchingUser.save()
+    await saddAsync(`refresh-tokens-${matchingUser._id}`, refreshToken)
 
     res.cookie("refreshToken", refreshToken, {
       path: "/",
@@ -86,11 +85,7 @@ export const logoutUser = async (req: Request, res: Response, next: any) => {
       process.env.REFRESH_TOKEN_SECRET
     ) as { _id: string }
 
-    await User.findByIdAndUpdate(_id, {
-      $pull: {
-        refreshTokens: refreshToken,
-      },
-    })
+    await sremAsync(`refresh-tokens-${_id}`, refreshToken)
 
     res.clearCookie("refreshToken")
 

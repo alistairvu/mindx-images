@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken"
 
 import User from "./user"
 import { generateAccessToken } from "../../utils/jwt"
+import { sismemberAsync } from "../../redis"
 import HTTPError from "../../httpError"
 
 // GET /api/auth/refresh
@@ -33,8 +34,12 @@ export const refreshAccessToken = async (
     }
 
     const user = await User.findById(_id)
+    const isRefreshToken = await sismemberAsync(
+      `refresh-tokens-${_id}`,
+      refreshToken
+    )
 
-    if (!user && !user.refreshTokens.includes(refreshToken)) {
+    if (!user && !isRefreshToken) {
       throw new HTTPError("Invalid refresh token", 401)
     }
 

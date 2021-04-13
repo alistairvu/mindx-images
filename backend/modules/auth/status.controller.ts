@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken"
 
 import User from "./user"
 import { generateAccessToken } from "../../utils/jwt"
+import { sismemberAsync } from "../../redis"
 
 // GET /api/auth/status
 export const getLoginStatus = async (
@@ -32,8 +33,12 @@ export const getLoginStatus = async (
     }
 
     const user = await User.findById(_id)
+    const isRefreshToken = await sismemberAsync(
+      `refresh-tokens-${_id}`,
+      refreshToken
+    )
 
-    if (!user && !user.refreshTokens.includes(refreshToken)) {
+    if (!user && !isRefreshToken) {
       return res.send({ success: 1, loggedIn: 0 })
     }
 

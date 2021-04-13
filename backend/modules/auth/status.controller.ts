@@ -33,12 +33,15 @@ export const getLoginStatus = async (
     }
 
     const user = await User.findById(_id)
+    if (!user) {
+      return res.send({ success: 1, loggedIn: 0 })
+    }
+
     const isRefreshToken = await sismemberAsync(
-      `refresh-tokens-${_id}`,
+      `mindx-images-${_id}`,
       refreshToken
     )
-
-    if (!user && !isRefreshToken) {
+    if (!isRefreshToken) {
       return res.send({ success: 1, loggedIn: 0 })
     }
 

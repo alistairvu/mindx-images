@@ -3,7 +3,7 @@ import App from "./App"
 import { BrowserRouter } from "react-router-dom"
 import { UserProvider } from "./context/userContext"
 import { QueryClient, QueryClientProvider } from "react-query"
-import "./styles/index.css"
+import "./styles/index.scss"
 
 const queryClient = new QueryClient()
 

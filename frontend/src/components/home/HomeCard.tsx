@@ -1,32 +1,35 @@
+import Card from "react-bootstrap/Card"
 import { Link } from "react-router-dom"
 
-interface HomeCardProps {
-  createdBy: string
+export interface PostInterface {
+  id: string
   imageUrl: string
   title: string
   description: string
-  id: string
+  createdBy: string
 }
 
-const HomeCard: React.FC<HomeCardProps> = (props) => {
+const PostCard: React.FC<PostInterface> = ({
+  id,
+  imageUrl,
+  title,
+  description,
+  createdBy,
+}) => {
   return (
-    <div className="w-full bg-white shadow-md rounded-md space-y-2">
-      <Link to={`/posts/${props.id}`}>
-        <img src={props.imageUrl} alt="" className="w-full rounded-t-md" />
+    <Card className="mb-2">
+      <Link to={`/post/${id}`}>
+        <Card.Img variant="top" src={imageUrl} style={{ cursor: "pointer" }} />
       </Link>
-      <div className="px-4 py-2 space-y-4">
-        <div className="space-y-1">
-          <Link to={`/posts/${props.id}`}>
-            <h1 className="text-xl font-semibold text-blue-600 hover:text-blue-500">
-              {props.title}
-            </h1>
-          </Link>
-          <p>{props.description}</p>
-        </div>
-        <p className="text-gray-400">{props.createdBy}</p>
-      </div>
-    </div>
+      <Card.Body>
+        <Card.Title>
+          <Link to={`/post/${id}`}>{title}</Link>
+        </Card.Title>
+        <Card.Text>{description}</Card.Text>
+        <Card.Text className="text-muted">{createdBy}</Card.Text>
+      </Card.Body>
+    </Card>
   )
 }
 
-export default HomeCard
+export default PostCard

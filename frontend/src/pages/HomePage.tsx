@@ -1,20 +1,28 @@
-import { HomeCard, HomePagination } from "../components/home"
-import { AppLoader } from "../components"
+import HomeCard from "../components/home/HomeCard"
+import Spinner from "react-bootstrap/Spinner"
+import Container from "react-bootstrap/Container"
+import Pagination from "react-bootstrap/Pagination"
+import Row from "react-bootstrap/Row"
+import Col from "react-bootstrap/Col"
 import axiosClient from "../api"
-
-import { useState } from "react"
+import { useRef } from "react"
 import { useQuery } from "react-query"
+import { useHistory, useLocation } from "react-router-dom"
 
 const HomePage: React.FC = () => {
-  const [activePage, setActivePage] = useState(1)
-  const pageSize = 4
+  const pageCount = useRef<number>(1)
+  const history = useHistory()
+  const location = useLocation()
+  const urlParams = new URLSearchParams(location.search)
+  const page = Number(urlParams.get("page")) || 1
 
   const getPosts = async () => {
     try {
       const { data } = await axiosClient.get("/api/posts", {
-        params: { page: activePage, pageSize: pageSize },
+        params: { page: page },
       })
       if (data.success) {
+        pageCount.current = data.pageCount
         return data
       }
     } catch (err) {
@@ -22,32 +30,41 @@ const HomePage: React.FC = () => {
     }
   }
 
-  const { data: postData, isLoading, error: postError } = useQuery(
-    ["/api/posts", activePage],
+  const { data: postData, isFetching } = useQuery(
+    ["/api/posts", page],
     getPosts
   )
+  console.log(postData)
 
-  if (isLoading) {
+  if (isFetching && !postData) {
     return (
-      <div className="container">
-        <AppLoader />
-      </div>
+      <Container className="mt-3 d-flex justify-content-center align-items-center">
+        <Spinner animation="border" />
+      </Container>
     )
   }
 
-  if (postError) {
-    return (
-      <div className="px-4 py-2 my-1 text-red-500 bg-red-100 border border-red-500 rounded-md">
-        {postError}
-      </div>
-    )
+  const renderPagination = () => {
+    const paginations = []
+    for (let i = 1; i <= pageCount.current; i++) {
+      paginations.push(
+        <Pagination.Item
+          key={i}
+          active={i === page}
+          onClick={() => history.push(`/?page=${i}`)}
+        >
+          {i}
+        </Pagination.Item>
+      )
+    }
+    return paginations
   }
 
   return (
-    <div className="container">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {postData &&
-          postData.posts.map((post: any) => (
+    <Container className="mt-3">
+      <Row>
+        {postData.posts.map((post: any) => (
+          <Col lg={3} md={6} key={post._id}>
             <HomeCard
               createdBy={post.createdBy[0].email}
               description={post.description}
@@ -55,16 +72,11 @@ const HomePage: React.FC = () => {
               title={post.title}
               id={post._id}
             />
-          ))}
-      </div>
-      {postData && (
-        <HomePagination
-          pageCount={postData.pageCount}
-          pageNumber={postData.pageNumber}
-          handlePageChange={setActivePage}
-        />
-      )}
-    </div>
+          </Col>
+        ))}
+      </Row>
+      {renderPagination()}
+    </Container>
   )
 }
 

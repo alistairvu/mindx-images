@@ -20,7 +20,7 @@ export const createUser = async (req: Request, res: Response, next: any) => {
     const accessToken = generateAccessToken(newUser._id)
     const refreshToken = generateRefreshToken(newUser._id)
 
-    await saddAsync(`refresh-tokens-${newUser._id}`, refreshToken)
+    await saddAsync(`mindx-images-${newUser._id}`, refreshToken)
 
     res.cookie("refreshToken", refreshToken, {
       path: "/",
@@ -56,7 +56,7 @@ export const loginUser = async (req: Request, res: Response, next: any) => {
     const accessToken = generateAccessToken(matchingUser._id)
     const refreshToken = generateRefreshToken(matchingUser._id)
 
-    await saddAsync(`refresh-tokens-${matchingUser._id}`, refreshToken)
+    await saddAsync(`mindx-images-${matchingUser._id}`, refreshToken)
 
     res.cookie("refreshToken", refreshToken, {
       path: "/",
@@ -85,7 +85,7 @@ export const logoutUser = async (req: Request, res: Response, next: any) => {
       process.env.REFRESH_TOKEN_SECRET
     ) as { _id: string }
 
-    await sremAsync(`refresh-tokens-${_id}`, refreshToken)
+    await sremAsync(`mindx-images-${_id}`, refreshToken)
 
     res.clearCookie("refreshToken")
 

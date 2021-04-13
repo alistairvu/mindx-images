@@ -1,49 +1,44 @@
+import { useLocation } from "react-router-dom"
+import Spinner from "react-bootstrap/Spinner"
 import { AppHeader } from "./components"
-import { Switch, Route, useLocation } from "react-router-dom"
-import { HomePage, SignUpPage, LoginPage, UploadPage, PostPage } from "./pages"
-import { useContext } from "react"
 import { UserContext } from "./context/userContext"
-import AppLoader from "./components/AppLoader"
-import { PublicRoute, GuestRoute, ProtectedRoute } from "./components/routes"
+import { HomePage, LogInPage, SignUpPage } from "./pages"
+import { Switch, Route } from "react-router-dom"
+import { useContext } from "react"
 
 const App: React.FC = () => {
   const location = useLocation()
-  const { currentUser } = useContext(UserContext)
+  const { isLoaded } = useContext(UserContext)
 
-  if (!currentUser.isLoaded) {
+  if (!isLoaded) {
     return (
       <>
-        <div className="flex items-center justify-center w-screen h-screen">
-          <AppLoader />
-        </div>
+        {location.pathname !== "/signup" && location.pathname !== "/login" && (
+          <AppHeader />
+        )}
       </>
     )
   }
 
   return (
     <>
-      {location.pathname !== "/signup" && location.pathname !== "/login" && (
-        <AppHeader />
-      )}
+      <header>
+        {location.pathname !== "/signup" && location.pathname !== "/login" && (
+          <AppHeader />
+        )}
+      </header>
 
       <main>
         <Switch>
-          <PublicRoute exact path="/">
+          <Route exact path="/">
             <HomePage />
-          </PublicRoute>
-          <GuestRoute path="/signup">
+          </Route>
+          <Route path="/login">
+            <LogInPage />
+          </Route>
+          <Route path="/signup">
             <SignUpPage />
-          </GuestRoute>
-          <GuestRoute path="/login">
-            <LoginPage />
-          </GuestRoute>
-          <ProtectedRoute path="/upload">
-            <UploadPage />
-          </ProtectedRoute>
-          <PublicRoute path="/posts/:id">
-            <PostPage />
-          </PublicRoute>
-          <Route path="*"></Route>
+          </Route>
         </Switch>
       </main>
     </>

@@ -1,29 +1,22 @@
+import Form from "react-bootstrap/Form"
+import Button from "react-bootstrap/Button"
+import Alert from "react-bootstrap/Alert"
 import { useState, useEffect, useContext } from "react"
 import axiosClient from "../../api"
-import { UserContext } from "../../context/userContext"
 import { useHistory } from "react-router-dom"
-import { useForm } from "react-hook-form"
-
-interface LoginDataInterface {
-  email: string
-  password: string
-}
+import { UserContext } from "../../context/userContext"
 
 const AuthLoginForm: React.FC = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginDataInterface>()
+  const [email, setEmail] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
   const [loginError, setLoginError] = useState<string>("")
   const { loginCurrentUser } = useContext(UserContext)
   const history = useHistory()
 
-  const handleLogin = async (loginData: LoginDataInterface) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     try {
-      const body = {
-        user: { email: loginData.email, password: loginData.password },
-      }
+      const body = { user: { email, password } }
       const { data } = await axiosClient.post("/api/auth/login", body)
       loginCurrentUser({
         token: data.token,
@@ -43,44 +36,40 @@ const AuthLoginForm: React.FC = () => {
   }, [])
 
   return (
-    <form onSubmit={handleSubmit(handleLogin)}>
-      <label className="block my-1">
-        <span>Email</span>
-        <input
-          type="email"
-          className="input"
-          {...register("email", { required: "You must have an email" })}
-        />
-        {errors.email && (
-          <small className="text-red-700">{errors.email.message}</small>
-        )}
-      </label>
-
-      <label className="block my-1">
-        <span>Password</span>
-        <input
-          type="password"
-          className="input"
-          {...register("password", { required: "You must have a password" })}
-        />
-        {errors.password && (
-          <small className="text-red-700">{errors.password.message}</small>
-        )}
-      </label>
-
+    <Form onSubmit={handleSubmit}>
+      <Form.Control
+        type="email"
+        required
+        id="email"
+        name="email"
+        className="mb-3"
+        placeholder="Enter your email..."
+        value={email}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setEmail(e.target.value)
+        }
+      />
+      <Form.Control
+        type="password"
+        required
+        id="password"
+        name="password"
+        className="mb-3"
+        placeholder="Enter your password..."
+        value={password}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setPassword(e.target.value)
+        }
+      />
       {loginError && (
-        <div className="px-4 py-2 my-1 text-red-500 bg-red-100 border border-red-500 rounded-md">
-          {loginError}
-        </div>
+        <Alert variant="danger" className="mb-3">
+          {setLoginError}
+        </Alert>
       )}
-
-      <button
-        type="submit"
-        className="w-full px-4 py-2 my-1 font-semibold text-white bg-blue-600 rounded-md focus:outline-none focus:ring hover:bg-blue-500"
-      >
+      <Button type="submit" variant="primary" className="w-100">
         Log In
-      </button>
-    </form>
+      </Button>
+    </Form>
   )
 }
 

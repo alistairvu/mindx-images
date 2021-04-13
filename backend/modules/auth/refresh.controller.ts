@@ -34,12 +34,15 @@ export const refreshAccessToken = async (
     }
 
     const user = await User.findById(_id)
+    if (!user) {
+      throw new HTTPError("Invalid refresh token", 401)
+    }
+
     const isRefreshToken = await sismemberAsync(
-      `refresh-tokens-${_id}`,
+      `mindx-images-${_id}`,
       refreshToken
     )
-
-    if (!user && !isRefreshToken) {
+    if (!isRefreshToken) {
       throw new HTTPError("Invalid refresh token", 401)
     }
 

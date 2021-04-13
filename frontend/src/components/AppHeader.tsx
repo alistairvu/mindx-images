@@ -10,6 +10,8 @@ const AppHeader: React.FC = () => {
   const { currentUser, resetCurrentUser } = useContext(UserContext)
 
   const renderNav = () => {
+    if (!currentUser.isLoaded) return null
+
     if (!currentUser.isLoggedIn) {
       return (
         <Nav className="me-auto">

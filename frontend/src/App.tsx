@@ -1,16 +1,16 @@
 import { useLocation } from "react-router-dom"
-import Spinner from "react-bootstrap/Spinner"
 import { AppHeader } from "./components"
 import { UserContext } from "./context/userContext"
-import { HomePage, LogInPage, SignUpPage } from "./pages"
-import { Switch, Route } from "react-router-dom"
+import { HomePage, LogInPage, SignUpPage, PostPage } from "./pages"
+import { Switch } from "react-router-dom"
 import { useContext } from "react"
+import { PublicRoute, GuestRoute, ProtectedRoute } from "./components/routes"
 
 const App: React.FC = () => {
   const location = useLocation()
-  const { isLoaded } = useContext(UserContext)
+  const { currentUser } = useContext(UserContext)
 
-  if (!isLoaded) {
+  if (!currentUser.isLoaded) {
     return (
       <>
         {location.pathname !== "/signup" && location.pathname !== "/login" && (
@@ -30,15 +30,18 @@ const App: React.FC = () => {
 
       <main>
         <Switch>
-          <Route exact path="/">
+          <PublicRoute exact path="/">
             <HomePage />
-          </Route>
-          <Route path="/login">
+          </PublicRoute>
+          <GuestRoute path="/login">
             <LogInPage />
-          </Route>
-          <Route path="/signup">
+          </GuestRoute>
+          <GuestRoute path="/signup">
             <SignUpPage />
-          </Route>
+          </GuestRoute>
+          <PublicRoute path="/post/:id">
+            <PostPage />
+          </PublicRoute>
         </Switch>
       </main>
     </>

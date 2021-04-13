@@ -5,16 +5,12 @@ import Pagination from "react-bootstrap/Pagination"
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 import axiosClient from "../api"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { useQuery } from "react-query"
-import { useHistory, useLocation } from "react-router-dom"
 
 const HomePage: React.FC = () => {
   const pageCount = useRef<number>(1)
-  const history = useHistory()
-  const location = useLocation()
-  const urlParams = new URLSearchParams(location.search)
-  const page = Number(urlParams.get("page")) || 1
+  const [page, setPage] = useState(1)
 
   const getPosts = async () => {
     try {
@@ -48,11 +44,7 @@ const HomePage: React.FC = () => {
     const paginations = []
     for (let i = 1; i <= pageCount.current; i++) {
       paginations.push(
-        <Pagination.Item
-          key={i}
-          active={i === page}
-          onClick={() => history.push(`/?page=${i}`)}
-        >
+        <Pagination.Item key={i} active={i === page} onClick={() => setPage(i)}>
           {i}
         </Pagination.Item>
       )
@@ -75,7 +67,7 @@ const HomePage: React.FC = () => {
           </Col>
         ))}
       </Row>
-      {renderPagination()}
+      <Pagination>{renderPagination()}</Pagination>
     </Container>
   )
 }

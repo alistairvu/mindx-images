@@ -1,5 +1,4 @@
 import { Response, Request } from "express"
-import { RequestWithUser } from "../../middleware/auth.middleware"
 import Comment from "./comment"
 import Post from "../post/post"
 import HTTPError from "../../httpError"
@@ -24,11 +23,7 @@ export const getComments = async (req: Request, res: Response, next: any) => {
 }
 
 // POST /api/comments
-export const createComment = async (
-  req: RequestWithUser,
-  res: Response,
-  next: any
-) => {
+export const createComment = async (req: Request, res: Response, next: any) => {
   try {
     const { postId, content } = req.body.comment
     const post = await Post.findById(postId)
@@ -43,6 +38,8 @@ export const createComment = async (
       createdBy: req.user._id,
     })
 
+    req.io.to(postId).emit("new-comment")
+
     res.send({ success: 1, comment: comment })
   } catch (err) {
     next(err)
@@ -50,11 +47,7 @@ export const createComment = async (
 }
 
 // DELETE /api/comments/:id
-export const deleteComment = async (
-  req: RequestWithUser,
-  res: Response,
-  next: any
-) => {
+export const deleteComment = async (req: Request, res: Response, next: any) => {
   try {
     const commentId = req.params.id
     await Comment.findByIdAndDelete(commentId)

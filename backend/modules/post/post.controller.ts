@@ -1,7 +1,5 @@
 import { Response, Request } from "express"
-import { RequestWithUser } from "../../middleware/auth.middleware"
 import Post from "./post"
-import Comment from "../comment/comment"
 import HTTPError from "../../httpError"
 
 // GET /api/posts
@@ -84,11 +82,7 @@ export const showPost = async (req: Request, res: Response, next: any) => {
 }
 
 // POST /api/post
-export const createPost = async (
-  req: RequestWithUser,
-  res: Response,
-  next: any
-) => {
+export const createPost = async (req: Request, res: Response, next: any) => {
   try {
     const { imageUrl, title, description } = req.body.post
     const createdBy = req.user._id
@@ -100,11 +94,7 @@ export const createPost = async (
 }
 
 // DELETE /api/posts/:id
-export const deletePost = async (
-  req: RequestWithUser,
-  res: Response,
-  next: any
-) => {
+export const deletePost = async (req: Request, res: Response, next: any) => {
   try {
     const post = await Post.findByIdAndDelete(req.params.id)
 

@@ -12,7 +12,8 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "typeRoots": ["backend/@types", "/node_modules/@types"]
   },
   "include": ["backend/**/*.ts"],
   "exclude": ["node_modules"]

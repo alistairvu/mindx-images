@@ -4,13 +4,9 @@ import jwt from "jsonwebtoken"
 import User, { UserSchemaInterface } from "../modules/auth/user"
 import HTTPError from "../httpError"
 
-export interface RequestWithUser extends Request {
-  user: UserSchemaInterface
-}
-
 // GET /api/auth/status
 export const protect = async (
-  req: RequestWithUser,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -41,6 +37,6 @@ export const protect = async (
     req.user = user
     next()
   } catch (err) {
-    next(err)
+    next(new HTTPError(err.message, 403))
   }
 }

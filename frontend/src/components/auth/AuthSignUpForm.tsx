@@ -1,9 +1,11 @@
 import Form from "react-bootstrap/Form"
 import Button from "react-bootstrap/Button"
 import Alert from "react-bootstrap/Alert"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import axiosClient from "../../api"
 import { useForm } from "react-hook-form"
+import { useHistory } from "react-router-dom"
+import { UserContext } from "../../context/userContext"
 
 interface SignUpInterface {
   email: string
@@ -13,6 +15,9 @@ interface SignUpInterface {
 
 const AuthSignUpForm: React.FC = () => {
   const [signUpError, setSignUpError] = useState<string>("")
+  const { loginCurrentUser } = useContext(UserContext)
+  const history = useHistory()
+
   const {
     register,
     handleSubmit,
@@ -33,6 +38,14 @@ const AuthSignUpForm: React.FC = () => {
       }
       const { data } = await axiosClient.post("/api/auth/signup", body)
       console.log(data)
+      if (data.success) {
+        loginCurrentUser({
+          token: data.token,
+          id: data.user._id,
+          email: data.user.email,
+        })
+        history.push("/")
+      }
     } catch (err) {
       console.log(err)
       setSignUpError(err.response.data.message)
@@ -56,7 +69,7 @@ const AuthSignUpForm: React.FC = () => {
         )}
       </Form.Group>
 
-      <Form.Group className="mb-3" controlId="email">
+      <Form.Group className="mb-3" controlId="password">
         <Form.Control
           type="password"
           placeholder="Enter your password..."
@@ -69,7 +82,7 @@ const AuthSignUpForm: React.FC = () => {
         )}
       </Form.Group>
 
-      <Form.Group className="mb-3" controlId="email">
+      <Form.Group className="mb-3" controlId="password-confirmation">
         <Form.Control
           type="password"
           placeholder="Enter your password..."

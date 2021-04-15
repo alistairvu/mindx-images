@@ -2,6 +2,7 @@ import { render } from "react-dom"
 import App from "./App"
 import { BrowserRouter } from "react-router-dom"
 import { UserProvider } from "./context/userContext"
+import { SocketProvider } from "./context/socketContext"
 import { QueryClient, QueryClientProvider } from "react-query"
 import "./styles/index.scss"
 
@@ -12,7 +13,9 @@ render(
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <UserProvider>
-        <App />
+        <SocketProvider>
+          <App />
+        </SocketProvider>
       </UserProvider>
     </BrowserRouter>
   </QueryClientProvider>,

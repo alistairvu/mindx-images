@@ -7,9 +7,10 @@ import { useParams } from "react-router-dom"
 
 import axiosClient from "../api"
 import { useQuery } from "react-query"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { UserContext } from "../context/userContext"
 import { PostCommentForm, PostCommentList } from "../components/post"
+import { SocketContext } from "../context/socketContext"
 
 const PostPage: React.FC = () => {
   const params = useParams<{ id: string }>()
@@ -17,11 +18,12 @@ const PostPage: React.FC = () => {
 
   const { currentUser } = useContext(UserContext)
 
+  const socket = useContext(SocketContext)
+
   const showPost = async () => {
     try {
       const { data } = await axiosClient.get(`/api/posts/${postId}`)
       if (data.success) {
-        console.log(data.post)
         return data.post
       }
     } catch (err) {
@@ -35,6 +37,17 @@ const PostPage: React.FC = () => {
     error: postError,
     refetch: commentRefetch,
   } = useQuery(`/api/posts/${postId}`, showPost)
+
+  useEffect(() => {
+    socket.emit("join-room", postId)
+
+    socket.on("new-comment", () => {
+      console.log("New comment!")
+      commentRefetch()
+    })
+
+    return () => socket.emit("leave-room", postId)
+  }, [socket, postId, commentRefetch])
 
   if (isLoading) {
     return (
@@ -51,8 +64,6 @@ const PostPage: React.FC = () => {
       </div>
     )
   }
-
-  console.log(postData)
 
   return (
     <Container className="my-2">

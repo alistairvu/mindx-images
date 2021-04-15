@@ -44,7 +44,9 @@ const PostCommentForm: React.FC<PostCommentFormProps> = ({ refetch }) => {
         }
         required
       />
-      <Button variant="primary">Add comment</Button>
+      <Button variant="primary" type="submit">
+        Add comment
+      </Button>
     </Form>
   )
 }

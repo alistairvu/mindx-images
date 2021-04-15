@@ -3,24 +3,34 @@ import Button from "react-bootstrap/Button"
 import Alert from "react-bootstrap/Alert"
 import { useState, useEffect } from "react"
 import axiosClient from "../../api"
+import { useForm } from "react-hook-form"
+
+interface SignUpInterface {
+  email: string
+  password: string
+  passwordConfirmation: string
+}
 
 const AuthSignUpForm: React.FC = () => {
-  const [email, setEmail] = useState<string>("")
-  const [password, setPassword] = useState<string>("")
-  const [passwordConfirmation, setPasswordConfirmation] = useState<string>("")
   const [signUpError, setSignUpError] = useState<string>("")
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpInterface>()
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const handleSignUp = async (signUpData: SignUpInterface) => {
     setSignUpError("")
 
-    if (password !== passwordConfirmation) {
+    if (signUpData.password !== signUpData.passwordConfirmation) {
       setSignUpError("Passwords do not match!")
       return
     }
 
     try {
-      const body = { user: { email, password } }
+      const body = {
+        user: { email: signUpData.email, password: signUpData.password },
+      }
       const { data } = await axiosClient.post("/api/auth/signup", body)
       console.log(data)
     } catch (err) {
@@ -34,41 +44,44 @@ const AuthSignUpForm: React.FC = () => {
   }, [])
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Form.Control
-        type="email"
-        required
-        name="email"
-        className="mb-3"
-        placeholder="Enter your email..."
-        value={email}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setEmail(e.target.value)
-        }
-      />
-      <Form.Control
-        type="password"
-        required
-        name="password"
-        className="mb-3"
-        placeholder="Enter your password..."
-        value={password}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setPassword(e.target.value)
-        }
-      />
-      <Form.Control
-        type="password"
-        required
-        id="password-confirmation"
-        name="passwordConfirmation"
-        className="mb-3"
-        placeholder="Confirm your password..."
-        value={passwordConfirmation}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setPasswordConfirmation(e.target.value)
-        }
-      />
+    <Form onSubmit={handleSubmit(handleSignUp)}>
+      <Form.Group className="mb-3" controlId="email">
+        <Form.Control
+          type="email"
+          placeholder="Enter your email..."
+          {...register("email", { required: true })}
+        />
+        {errors.email && (
+          <Form.Text className="text-danger">{errors.email.message}</Form.Text>
+        )}
+      </Form.Group>
+
+      <Form.Group className="mb-3" controlId="email">
+        <Form.Control
+          type="password"
+          placeholder="Enter your password..."
+          {...register("password", { required: true })}
+        />
+        {errors.password && (
+          <Form.Text className="text-danger">
+            {errors.password.message}
+          </Form.Text>
+        )}
+      </Form.Group>
+
+      <Form.Group className="mb-3" controlId="email">
+        <Form.Control
+          type="password"
+          placeholder="Enter your password..."
+          {...register("passwordConfirmation", { required: true })}
+        />
+        {errors.passwordConfirmation && (
+          <Form.Text className="text-danger">
+            {errors.passwordConfirmation.message}
+          </Form.Text>
+        )}
+      </Form.Group>
+
       {signUpError && (
         <Alert variant="danger" className="mb-3">
           {signUpError}

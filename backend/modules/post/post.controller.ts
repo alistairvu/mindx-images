@@ -13,6 +13,11 @@ export const getPosts = async (req: Request, res: Response, next: any) => {
       {
         $facet: {
           posts: [
+            {
+              $sort: {
+                createdAt: -1,
+              },
+            },
             { $skip: offset },
             { $limit: pageSize },
             {

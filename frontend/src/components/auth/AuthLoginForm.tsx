@@ -57,7 +57,7 @@ const AuthLoginForm: React.FC = () => {
         )}
       </Form.Group>
 
-      <Form.Group className="mb-3" controlId="email">
+      <Form.Group className="mb-3" controlId="password">
         <Form.Control
           type="password"
           placeholder="Enter your password..."

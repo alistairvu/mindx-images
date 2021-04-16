@@ -38,7 +38,6 @@ const PostPage: React.FC = () => {
 
     socket.on("new-comment", (comment: any) => {
       queryClient.setQueryData(["post", postId], (prev: any) => {
-        console.log(prev)
         return {
           ...prev,
           comments: [...prev.comments, comment],

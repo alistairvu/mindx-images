@@ -33,17 +33,17 @@ app.use("/api/auth", authRouter)
 app.use("/api/posts", postRouter)
 app.use("/api/comments", commentRouter)
 
-app.use("*", (req, res) =>
-  res.status(404).send({ success: 0, message: "Route not found" })
-)
-
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "production" && process.env.MONO_REPO === "1") {
   app.use(express.static(path.join(__dirname, "/frontend/build")))
 
   app.get("*", (req, res) =>
     res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
   )
 }
+
+app.use("*", (req, res) =>
+  res.status(404).send({ success: 0, message: "Route not found" })
+)
 
 app.use((err: any, req: Request, res: Response, next: any) => {
   handleError(err, res)

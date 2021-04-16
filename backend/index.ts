@@ -11,6 +11,7 @@ import postRouter from "./modules/post/post.router"
 import commentRouter from "./modules/comment/comment.router"
 
 import { handleError } from "./httpError"
+import path from "path"
 
 dotenv.config()
 connectDB()
@@ -35,6 +36,14 @@ app.use("/api/comments", commentRouter)
 app.use("*", (req, res) =>
   res.status(404).send({ success: 0, message: "Route not found" })
 )
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "/frontend/build")))
+
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
+  )
+}
 
 app.use((err: any, req: Request, res: Response, next: any) => {
   handleError(err, res)

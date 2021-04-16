@@ -1,2 +1,2 @@
 web: ts-node --files ./backend
-app: yarn --cwd frontend start
+app: yarn --cwd frontend build

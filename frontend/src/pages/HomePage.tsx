@@ -48,17 +48,21 @@ const HomePage: React.FC = () => {
   return (
     <Container className="mt-3">
       <Row>
-        {postData.posts.map((post: any) => (
-          <Col lg={3} md={6} key={post._id}>
-            <HomeCard
-              createdBy={post.createdBy[0].email}
-              description={post.description}
-              imageUrl={post.imageUrl}
-              title={post.title}
-              id={post._id}
-            />
-          </Col>
-        ))}
+        {postData.posts ? (
+          postData.posts.map((post: any) => (
+            <Col lg={3} md={6} key={post._id}>
+              <HomeCard
+                createdBy={post.createdBy[0].email}
+                description={post.description}
+                imageUrl={post.imageUrl}
+                title={post.title}
+                id={post._id}
+              />
+            </Col>
+          ))
+        ) : (
+          <h1>No posts - Create the first post here!</h1>
+        )}
       </Row>
       <Pagination>{renderPagination()}</Pagination>
     </Container>

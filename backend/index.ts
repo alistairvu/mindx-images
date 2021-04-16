@@ -34,10 +34,10 @@ app.use("/api/posts", postRouter)
 app.use("/api/comments", commentRouter)
 
 if (process.env.NODE_ENV === "production" && process.env.MONO_REPO === "1") {
-  app.use(express.static(path.join(__dirname, "/frontend/build")))
+  app.use(express.static(path.join(__dirname, "../frontend/build")))
 
   app.get("*", (req, res) =>
-    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
+    res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"))
   )
 }
 

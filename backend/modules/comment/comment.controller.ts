@@ -38,7 +38,10 @@ export const createComment = async (req: Request, res: Response, next: any) => {
       createdBy: req.user._id,
     })
 
-    req.io.to(postId).emit("new-comment")
+    await comment.populate("createdBy").execPopulate()
+
+    console.log(comment)
+    req.io.to(postId).emit("new-comment", comment)
 
     res.send({ success: 1, comment: comment })
   } catch (err) {

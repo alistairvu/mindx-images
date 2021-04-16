@@ -6,7 +6,7 @@ import Row from "react-bootstrap/Row"
 import { useParams } from "react-router-dom"
 
 import axiosClient from "../api"
-import { useQuery } from "react-query"
+import { useQuery, useQueryClient } from "react-query"
 import { useContext, useEffect } from "react"
 import { UserContext } from "../context/userContext"
 import { PostCommentForm, PostCommentList } from "../components/post"
@@ -19,6 +19,7 @@ const PostPage: React.FC = () => {
   const { currentUser } = useContext(UserContext)
 
   const socket = useContext(SocketContext)
+  const queryClient = useQueryClient()
 
   const showPost = async () => {
     try {
@@ -31,23 +32,28 @@ const PostPage: React.FC = () => {
     }
   }
 
-  const {
-    data: postData,
-    isLoading,
-    error: postError,
-    refetch: commentRefetch,
-  } = useQuery(`/api/posts/${postId}`, showPost)
+  const { data: postData, isLoading, error: postError } = useQuery(
+    `/api/posts/${postId}`,
+    showPost
+  )
 
   useEffect(() => {
     socket.emit("join-room", postId)
 
-    socket.on("new-comment", () => {
+    socket.on("new-comment", (comment: any) => {
       console.log("New comment!")
-      commentRefetch()
+      console.log(comment)
+      queryClient.setQueryData(`/api/posts/${postId}`, (prev: any) => {
+        console.log(prev)
+        return {
+          ...prev,
+          comments: [...prev.comments, comment],
+        }
+      })
     })
 
     return () => socket.emit("leave-room", postId)
-  }, [socket, postId, commentRefetch])
+  }, [socket, postId, queryClient])
 
   if (isLoading) {
     return (
@@ -77,9 +83,7 @@ const PostPage: React.FC = () => {
         </Col>
         <Col md={4}>
           <PostCommentList comments={postData.comments} />
-          {currentUser.isLoggedIn && (
-            <PostCommentForm refetch={commentRefetch} />
-          )}
+          {currentUser.isLoggedIn && <PostCommentForm />}
         </Col>
       </Row>
     </Container>

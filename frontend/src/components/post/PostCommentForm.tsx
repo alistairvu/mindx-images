@@ -4,11 +4,7 @@ import { useParams } from "react-router-dom"
 import Form from "react-bootstrap/Form"
 import Button from "react-bootstrap/Button"
 
-interface PostCommentFormProps {
-  refetch: any
-}
-
-const PostCommentForm: React.FC<PostCommentFormProps> = ({ refetch }) => {
+const PostCommentForm: React.FC = () => {
   const [content, setContent] = useState<string>("")
   const params = useParams<{ id: string }>()
   const { id: postId } = params
@@ -25,7 +21,6 @@ const PostCommentForm: React.FC<PostCommentFormProps> = ({ refetch }) => {
 
       if (data.success) {
         setContent("")
-        refetch()
       }
     } catch (err) {
       console.log(err)

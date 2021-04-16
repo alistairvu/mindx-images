@@ -23,7 +23,7 @@ const HomePage: React.FC = () => {
   }
 
   const { data: postData, isLoading, error: postError } = useQuery(
-    ["/api/posts", activePage],
+    ["posts", activePage],
     getPosts
   )
 

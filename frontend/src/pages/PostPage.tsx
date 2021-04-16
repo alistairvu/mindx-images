@@ -22,18 +22,14 @@ const PostPage: React.FC = () => {
   const queryClient = useQueryClient()
 
   const showPost = async () => {
-    try {
-      const { data } = await axiosClient.get(`/api/posts/${postId}`)
-      if (data.success) {
-        return data.post
-      }
-    } catch (err) {
-      console.log(err)
+    const { data } = await axiosClient.get(`/api/posts/${postId}`)
+    if (data.success) {
+      return data.post
     }
   }
 
   const { data: postData, isLoading, error: postError } = useQuery(
-    `/api/posts/${postId}`,
+    ["post", postId],
     showPost
   )
 
@@ -41,9 +37,7 @@ const PostPage: React.FC = () => {
     socket.emit("join-room", postId)
 
     socket.on("new-comment", (comment: any) => {
-      console.log("New comment!")
-      console.log(comment)
-      queryClient.setQueryData(`/api/posts/${postId}`, (prev: any) => {
+      queryClient.setQueryData(["post", postId], (prev: any) => {
         console.log(prev)
         return {
           ...prev,

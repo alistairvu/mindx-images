@@ -28,7 +28,7 @@ const PostPage: React.FC = () => {
     isLoading,
     error: postError,
     refetch: commentRefetch,
-  } = useQuery(`/api/posts/${postId}`, showPost)
+  } = useQuery(`posts-${postId}`, showPost)
 
   if (isLoading) {
     return (

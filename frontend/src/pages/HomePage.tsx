@@ -13,23 +13,16 @@ const HomePage: React.FC = () => {
   const [page, setPage] = useState(1)
 
   const getPosts = async () => {
-    try {
-      const { data } = await axiosClient.get("/api/posts", {
-        params: { page: page },
-      })
-      if (data.success) {
-        pageCount.current = data.pageCount
-        return data
-      }
-    } catch (err) {
-      console.log(err)
+    const { data } = await axiosClient.get("/api/posts", {
+      params: { page: page },
+    })
+    if (data.success) {
+      pageCount.current = data.pageCount
+      return data
     }
   }
 
-  const { data: postData, isFetching } = useQuery(
-    ["/api/posts", page],
-    getPosts
-  )
+  const { data: postData, isFetching } = useQuery(["posts", page], getPosts)
   console.log(postData)
 
   if (isFetching && !postData) {

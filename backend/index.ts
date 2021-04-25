@@ -33,7 +33,7 @@ app.use("/api/auth", authRouter)
 app.use("/api/posts", postRouter)
 app.use("/api/comments", commentRouter)
 
-if (process.env.NODE_ENV === "production" && process.env.MONO_REPO === "1") {
+if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/build")))
 
   app.get("*", (req, res) =>
